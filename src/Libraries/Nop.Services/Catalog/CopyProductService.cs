@@ -368,9 +368,9 @@ public partial class CopyProductService : ICopyProductService
             }
 
             //quantity change history
-            await _productService.AddStockQuantityHistoryEntryAsync(productCopy, combination.StockQuantity,
-                combination.StockQuantity,
-                message: string.Format(await _localizationService.GetResourceAsync("Admin.StockQuantityHistory.Messages.CopyProduct"), product.Id), combinationId: combination.Id);
+            await _productService.AddStockQuantityHistoryEntryAsync(productCopy, combinationCopy.StockQuantity,
+                combinationCopy.StockQuantity,
+                message: string.Format(await _localizationService.GetResourceAsync("Admin.StockQuantityHistory.Messages.CopyProduct"), product.Id), combinationId: combinationCopy.Id);
         }
     }
 
@@ -860,10 +860,6 @@ public partial class CopyProductService : ICopyProductService
 
         //tier prices
         await CopyTierPricesAsync(product, productCopy);
-
-        //update "HasTierPrices" and "HasDiscountsApplied" properties
-        await _productService.UpdateHasTierPricesPropertyAsync(productCopy);
-        await _productService.UpdateHasDiscountsAppliedAsync(productCopy);
 
         //associated products
         await CopyAssociatedProductsAsync(product, isPublished, copyMultimedia, copyAssociatedProducts, productCopy);
