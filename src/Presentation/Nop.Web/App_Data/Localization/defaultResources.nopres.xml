@@ -105,6 +105,9 @@
   <LocaleResource Name="Account.ChangePassword.Fields.OldPassword.Required">
     <Value>Old password is required.</Value>
   </LocaleResource>
+  <LocaleResource Name="Account.ChangePassword.MustBeChanged">
+    <Value>Your password must be changed</Value>
+  </LocaleResource>
   <LocaleResource Name="Account.ChangePassword.PasswordIsExpired">
     <Value>Your password has expired, please create a new one</Value>
   </LocaleResource>
@@ -2264,6 +2267,12 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Categories.Fields.Published.Hint">
     <Value>Check to publish this category (visible in store). Uncheck to unpublish (category not available in store).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Categories.Fields.RestrictFromVendors">
+    <Value>Restrict from vendors</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Categories.Fields.RestrictFromVendors.Hint">
+    <Value>Check to restrict vendors from adding products to this category. This option is useful when you have multi-vendors enabled in your store.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Categories.Fields.SeName">
     <Value>Search engine friendly page name</Value>
@@ -11973,6 +11982,12 @@
   <LocaleResource Name="Admin.Customers.Customers.Fields.MultiFactorAuthenticationProvider.Hint">
     <Value>Name of the multi-factor authentication provider to which the customer is associated.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Fields.MustChangePassword">
+    <Value>Customer must change password</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Customers.Customers.Fields.MustChangePassword.Hint">
+    <Value>Check to require the customer to change their password.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Fields.Newsletter">
     <Value>Newsletter</Value>
   </LocaleResource>
@@ -19887,6 +19902,9 @@
   <LocaleResource Name="ShoppingCart.GiftCardCouponCode.DontWorkWithAutoshipProducts">
     <Value>You cannot use gift cards with auto-ship (recurring) items.</Value>
   </LocaleResource>
+  <LocaleResource Name="ShoppingCart.GiftCardCouponCode.DontWorkWithGiftCards">
+    <Value>You cannot use gift cards with other gift cards.</Value>
+  </LocaleResource>
   <LocaleResource Name="ShoppingCart.GiftCardCouponCode.Label">
     <Value>Enter gift card code</Value>
   </LocaleResource>
@@ -20158,22 +20176,22 @@
     <Value>Password is required.</Value>
   </LocaleResource>
   <LocaleResource Name="Validation.Password.LengthValidation">
-    <Value><![CDATA[<li>must have at least {0} characters and not greater than {1} characters</li>]]></Value>
+    <Value>must have at least {0} characters and not greater than {1} characters</Value>
   </LocaleResource>
   <LocaleResource Name="Validation.Password.RequireDigit">
-    <Value><![CDATA[<li>must have at least one digit</li>]]></Value>
+    <Value>must have at least one digit</Value>
   </LocaleResource>
   <LocaleResource Name="Validation.Password.RequireLowercase">
-    <Value><![CDATA[<li>must have at least one lowercase</li>]]></Value>
+    <Value>must have at least one lowercase</Value>
   </LocaleResource>
   <LocaleResource Name="Validation.Password.RequireNonAlphanumeric">
-    <Value><![CDATA[<li>must have at least one special character (e.g. #?!@$%^&*-)</li>]]></Value>
+    <Value><![CDATA[must have at least one special character (e.g. #?!@$%^&*-)]]></Value>
   </LocaleResource>
   <LocaleResource Name="Validation.Password.RequireUppercase">
-    <Value><![CDATA[<li>must have at least one uppercase</li>]]></Value>
+    <Value>must have at least one uppercase</Value>
   </LocaleResource>
   <LocaleResource Name="Validation.Password.Rule">
-    <Value><![CDATA[<p>must meet the following rules: </p><ul>{0}{1}{2}{3}{4}</ul>]]></Value>
+    <Value>Password must meet the following rules: </Value>
   </LocaleResource>
   <LocaleResource Name="Vendors">
     <Value>Vendors</Value>
