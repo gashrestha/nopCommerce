@@ -406,7 +406,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.AllowCustomersToSearchWithCategoryName_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.DisplayAllPicturesOnCatalogPages_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.ProductUrlStructureTypeId_OverrideForStore, mo => mo.Ignore())
-            .ForMember(model => model.ProductUrlStructureTypes, mo => mo.Ignore());
+            .ForMember(model => model.ProductUrlStructureTypes, mo => mo.Ignore())
+            .ForMember(model => model.ShowSearchBoxCategories_OverrideForStore, mo => mo.Ignore());
         CreateMap<CatalogSettingsModel, CatalogSettings>()
             .ForMember(settings => settings.AjaxProcessAttributeChange, options => options.Ignore())
             .ForMember(settings => settings.CompareProductsNumber, options => options.Ignore())
@@ -1358,7 +1359,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(settings => settings.MinimumOrderPlacementInterval, options => options.Ignore())
             .ForMember(settings => settings.DisplayCustomerCurrencyOnOrders, options => options.Ignore())
             .ForMember(settings => settings.ReturnRequestsFileMaximumSize, options => options.Ignore())
-            .ForMember(settings => settings.DisplayOrderSummary, options => options.Ignore());
+            .ForMember(settings => settings.DisplayOrderSummary, options => options.Ignore())
+            .ForMember(settings => settings.PlaceOrderWithLock, options => options.Ignore());
 
         CreateMap<ReturnRequestAction, ReturnRequestActionModel>();
         CreateMap<ReturnRequestActionModel, ReturnRequestAction>();
@@ -1644,6 +1646,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.EuVatEmailAdminWhenNewVatSubmitted_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.EuVatEnabled_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.EuVatEnabledForGuests_OverrideForStore, options => options.Ignore())
+            .ForMember(model => model.EuVatRequired_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.EuVatShopCountries, options => options.Ignore())
             .ForMember(model => model.EuVatShopCountryId_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.EuVatUseWebService_OverrideForStore, options => options.Ignore())
