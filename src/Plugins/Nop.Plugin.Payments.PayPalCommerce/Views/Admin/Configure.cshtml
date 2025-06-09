@@ -4,13 +4,8 @@
     Layout = "_ConfigurePlugin";
     NopHtml.SetActiveMenuItemSystemName($"{PayPalCommerceDefaults.SystemName} Configuration");
 
-    //tour step
-    ViewBag.TourStep = TourStep.PaymentPayPal;
-
     var learnMore = "<p>Learn more about the PayPal Commerce plugin configuration <a href='https://docs.nopcommerce.com/getting-started/configure-payments/payment-methods/paypal-commerce.html' target='_blank'>here</a>.</p>";
 }
-
-@await Html.PartialAsync("_AdminTour")
 
 @await Component.InvokeAsync(typeof(StoreScopeConfigurationViewComponent))
 
@@ -87,7 +82,7 @@
 
 <form asp-controller="PayPalCommerce" asp-action="Configure" method="post">
     <div class="cards-group">
-        <div class="card card-default card-outline card-info d-none" id="pnlOnboarding">
+        <div class="card card-default card-outline card-info" id="pnlOnboarding">
             <div class="card-header">
                 @T("Plugins.Payments.PayPalCommerce.Onboarding.Title")
             </div>
@@ -386,7 +381,7 @@
                             <span asp-validation-for="UseShipmentTracking"></span>
                         </div>
                     </div>
-                    <div class="card card-default advanced-setting">
+                    <div id="prominently-card" class="card card-default advanced-setting">
                         <div class="card-header">
                             @T("Plugins.Payments.PayPalCommerce.Prominently")
                         </div>
@@ -481,3 +476,8 @@
 </form>
 
 <nop-alert asp-alert-id="signUpFailed" />
+
+@if (await Html.IsTourActiveAsync())
+{
+    @await Html.PartialAsync("~/Plugins/Payments.PayPalCommerce/Views/Admin/_Configure.Tour.cshtml")
+}

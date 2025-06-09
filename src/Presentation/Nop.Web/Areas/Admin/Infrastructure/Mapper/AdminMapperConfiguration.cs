@@ -195,11 +195,6 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.DistributedCacheTypeValues, options => options.Ignore());
         CreateMap<DistributedCacheConfigModel, DistributedCacheConfig>();
 
-        CreateMap<AzureBlobConfig, AzureBlobConfigModel>();
-        CreateMap<AzureBlobConfigModel, AzureBlobConfig>()
-            .ForMember(entity => entity.Enabled, options => options.Ignore())
-            .ForMember(entity => entity.DataProtectionKeysEncryptWithVault, options => options.Ignore());
-
         CreateMap<InstallationConfig, InstallationConfigModel>();
         CreateMap<InstallationConfigModel, InstallationConfig>();
 
@@ -333,8 +328,10 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.ExportImportProductAttributes_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.ExportImportProductCategoryBreadcrumb_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.ExportImportProductSpecificationAttributes_OverrideForStore, options => options.Ignore())
+            .ForMember(model => model.ExportImportTierPrices_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.ExportImportRelatedEntitiesByName_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.ExportImportProductUseLimitedToStores_OverrideForStore, options => options.Ignore())
+            .ForMember(model => model.ExportImportCategoryUseLimitedToStores_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.ExportImportSplitProductsFile_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.IncludeFullDescriptionInCompareProducts_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.IncludeShortDescriptionInCompareProducts_OverrideForStore, options => options.Ignore())
@@ -428,7 +425,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(settings => settings.UseAjaxLoadMenu, options => options.Ignore())
             .ForMember(settings => settings.UseLinksInRequiredProductWarnings, options => options.Ignore())
             .ForMember(settings => settings.UseStandardSearchWhenSearchProviderThrowsException, options => options.Ignore())
-            .ForMember(settings => settings.ActiveSearchProviderSystemName, options => options.Ignore());
+            .ForMember(settings => settings.ActiveSearchProviderSystemName, options => options.Ignore())
+            .ForMember(settings => settings.VendorProductReviewsPageSize, options => options.Ignore());
 
         CreateMap<ProductCategory, CategoryProductModel>()
             .ForMember(model => model.ProductName, options => options.Ignore());
@@ -562,7 +560,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
 
         CreateMap<Product, DiscountProductModel>()
             .ForMember(model => model.ProductId, options => options.Ignore())
-            .ForMember(model => model.ProductName, options => options.Ignore());
+            .ForMember(model => model.ProductName, options => options.Ignore())
+            .ForMember(model => model.VendorId, options => options.Ignore());
 
         CreateMap<Product, AssociatedProductModel>()
             .ForMember(model => model.ProductName, options => options.Ignore());
@@ -662,7 +661,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.AttributeType, options => options.Ignore());
 
         CreateMap<ProductTag, ProductTagModel>()
-            .ForMember(model => model.ProductCount, options => options.Ignore());
+            .ForMember(model => model.ProductCount, options => options.Ignore())
+            .ForMember(model => model.ProductTagProductSearchModel, options => options.Ignore());
 
         CreateMap<ProductTemplate, ProductTemplateModel>();
         CreateMap<ProductTemplateModel, ProductTemplate>();
@@ -753,7 +753,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateMap<AddressSettings, AddressSettingsModel>()
             .ForMember(model => model.AvailableCountries, options => options.Ignore());
         CreateMap<AddressSettingsModel, AddressSettings>()
-            .ForMember(settings => settings.PreselectCountryIfOnlyOne, options => options.Ignore());
+            .ForMember(settings => settings.PreselectCountryIfOnlyOne, options => options.Ignore())
+            .ForMember(settings => settings.PrePopulateCountryByCustomer, options => options.Ignore());
 
         CreateMap<Setting, SettingModel>()
             .ForMember(setting => setting.AvailableStores, options => options.Ignore())
@@ -971,6 +972,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.AddDiscountRequirement, options => options.Ignore())
             .ForMember(model => model.AvailableDiscountRequirementRules, options => options.Ignore())
             .ForMember(model => model.AvailableRequirementGroups, options => options.Ignore())
+            .ForMember(model => model.AvailableVendors, options => options.Ignore())
             .ForMember(model => model.DiscountCategorySearchModel, options => options.Ignore())
             .ForMember(model => model.DiscountManufacturerSearchModel, options => options.Ignore())
             .ForMember(model => model.DiscountProductSearchModel, options => options.Ignore())
@@ -980,7 +982,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.GroupName, options => options.Ignore())
             .ForMember(model => model.PrimaryStoreCurrencyCode, options => options.Ignore())
             .ForMember(model => model.RequirementGroupId, options => options.Ignore())
-            .ForMember(model => model.TimesUsed, options => options.Ignore());
+            .ForMember(model => model.TimesUsed, options => options.Ignore())
+            .ForMember(model => model.IsLoggedInAsVendor, options => options.Ignore());
         CreateMap<DiscountModel, Discount>()
             .ForMember(entity => entity.DiscountLimitation, options => options.Ignore())
             .ForMember(entity => entity.DiscountType, options => options.Ignore());
@@ -1154,8 +1157,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.AllowSVGUploads_OverrideForStore, options => options.Ignore());
         CreateMap<MediaSettingsModel, MediaSettings>()
             .ForMember(settings => settings.AutoCompleteSearchThumbPictureSize, options => options.Ignore())
-            .ForMember(settings => settings.AzureCacheControlHeader, options => options.Ignore())
             .ForMember(settings => settings.UseAbsoluteImagePath, options => options.Ignore())
+            .ForMember(settings => settings.AutoOrientImage, options => options.Ignore())
             .ForMember(settings => settings.ImageSquarePictureSize, options => options.Ignore())
             .ForMember(settings => settings.VideoIframeAllow, options => options.Ignore())
             .ForMember(settings => settings.VideoIframeHeight, options => options.Ignore())
@@ -1175,7 +1178,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.CreatedOn, options => options.Ignore())
             .ForMember(model => model.DontSendBeforeDate, options => options.Ignore())
             .ForMember(model => model.EmailAccountId, options => options.Ignore())
-            .ForMember(model => model.TestEmail, options => options.Ignore());
+            .ForMember(model => model.TestEmail, options => options.Ignore())
+            .ForMember(model => model.CopyCampaignModel, options => options.Ignore());
         CreateMap<CampaignModel, Campaign>()
             .ForMember(entity => entity.CreatedOnUtc, options => options.Ignore())
             .ForMember(entity => entity.DontSendBeforeDateUtc, options => options.Ignore());
@@ -1360,7 +1364,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(settings => settings.DisplayCustomerCurrencyOnOrders, options => options.Ignore())
             .ForMember(settings => settings.ReturnRequestsFileMaximumSize, options => options.Ignore())
             .ForMember(settings => settings.DisplayOrderSummary, options => options.Ignore())
-            .ForMember(settings => settings.PlaceOrderWithLock, options => options.Ignore());
+            .ForMember(settings => settings.PlaceOrderWithLock, options => options.Ignore())
+            .ForMember(settings => settings.CustomerOrdersPageSize, options => options.Ignore());
 
         CreateMap<ReturnRequestAction, ReturnRequestActionModel>();
         CreateMap<ReturnRequestActionModel, ReturnRequestAction>();
@@ -1506,6 +1511,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.ShowOnForgotPasswordPage_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.ShowOnForum_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.ShowOnCheckoutPageForGuests_OverrideForStore, options => options.Ignore())
+            .ForMember(model => model.ShowOnCheckGiftCardBalance_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.CaptchaType_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.ReCaptchaV3ScoreThreshold_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.CaptchaTypeValues, options => options.Ignore());
@@ -1665,7 +1671,10 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.TaxBasedOn_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.TaxCategories, options => options.Ignore())
             .ForMember(model => model.TaxDisplayTypeValues, options => options.Ignore())
-            .ForMember(model => model.TaxDisplayType_OverrideForStore, options => options.Ignore());
+            .ForMember(model => model.TaxDisplayType_OverrideForStore, options => options.Ignore())
+            .ForMember(model => model.HmrcApiUrl_OverrideForStore, options => options.Ignore())
+            .ForMember(model => model.HmrcClientId_OverrideForStore, options => options.Ignore())
+            .ForMember(model => model.HmrcClientSecret_OverrideForStore, options => options.Ignore());
         CreateMap<TaxSettingsModel, TaxSettings>()
             .ForMember(settings => settings.ActiveTaxProviderSystemName, options => options.Ignore())
             .ForMember(settings => settings.LogErrors, options => options.Ignore());
@@ -1699,7 +1708,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.SeName, options => options.Ignore())
             .ForMember(model => model.VendorAttributes, options => options.Ignore())
             .ForMember(model => model.VendorNoteSearchModel, options => options.Ignore())
-            .ForMember(model => model.PrimaryStoreCurrencyCode, options => options.Ignore());
+            .ForMember(model => model.PrimaryStoreCurrencyCode, options => options.Ignore())
+            .ForMember(model => model.PmCustomerInfo, options => options.Ignore());
         CreateMap<VendorModel, Vendor>()
             .ForMember(entity => entity.Deleted, options => options.Ignore());
 
@@ -1730,7 +1740,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.VendorAttributeSearchModel, options => options.Ignore())
             .ForMember(model => model.VendorsBlockItemsToDisplay_OverrideForStore, options => options.Ignore());
         CreateMap<VendorSettingsModel, VendorSettings>()
-            .ForMember(settings => settings.DefaultVendorPageSizeOptions, options => options.Ignore());
+            .ForMember(settings => settings.DefaultVendorPageSizeOptions, options => options.Ignore())
+            .ForMember(settings => settings.MaximumProductPicturesNumber, options => options.Ignore());
     }
 
     /// <summary>

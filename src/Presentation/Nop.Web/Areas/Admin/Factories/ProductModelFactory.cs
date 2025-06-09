@@ -630,6 +630,25 @@ public partial class ProductModelFactory : IProductModelFactory
         return searchModel;
     }
 
+    /// <summary>
+    /// Prepare tagged products search model
+    /// </summary>
+    /// <param name="searchModel">Tagged products search model</param>
+    /// <param name="productTag">Product tag</param>
+    /// <returns>Related product search model</returns>
+    protected virtual ProductTagProductSearchModel PrepareTaggedProductsSearchModel(ProductTagProductSearchModel searchModel, ProductTag productTag)
+    {
+        ArgumentNullException.ThrowIfNull(searchModel);
+        ArgumentNullException.ThrowIfNull(productTag);
+
+        searchModel.ProductTagId = productTag.Id;
+
+        //prepare page parameters
+        searchModel.SetGridPageSize();
+
+        return searchModel;
+    }
+
     #endregion
 
     #region Methods
@@ -743,6 +762,8 @@ public partial class ProductModelFactory : IProductModelFactory
             pageIndex: searchModel.Page - 1, pageSize: searchModel.PageSize,
             overridePublished: overridePublished);
 
+        var primaryStoreCurrency = await _currencyService.GetCurrencyByIdAsync(_currencySettings.PrimaryStoreCurrencyId);
+
         //prepare list model
         var model = await new ProductListModel().PrepareToGridAsync(searchModel, products, () =>
         {
@@ -756,6 +777,8 @@ public partial class ProductModelFactory : IProductModelFactory
 
                 //fill formatted price
                 productModel.FormattedPrice = product.ProductType == ProductType.GroupedProduct ? null : await _priceFormatter.FormatPriceAsync(product.Price);
+
+                productModel.PrimaryStoreCurrencyCode = primaryStoreCurrency.CurrencyCode;
 
                 //fill in additional values (not existing in the entity)
                 productModel.SeName = await _urlRecordService.GetSeNameAsync(product, 0, true, false);
@@ -873,9 +896,11 @@ public partial class ProductModelFactory : IProductModelFactory
         model.PrimaryStoreCurrencyCode = (await _currencyService.GetCurrencyByIdAsync(_currencySettings.PrimaryStoreCurrencyId)).CurrencyCode;
         model.BaseWeightIn = (await _measureService.GetMeasureWeightByIdAsync(_measureSettings.BaseWeightId)).Name;
         model.BaseDimensionIn = (await _measureService.GetMeasureDimensionByIdAsync(_measureSettings.BaseDimensionId)).Name;
-        model.IsLoggedInAsVendor = await _workContext.GetCurrentVendorAsync() != null;
         model.HasAvailableSpecificationAttributes =
             (await _specificationAttributeService.GetSpecificationAttributesWithOptionsAsync()).Any();
+
+        var currentVendor = await _workContext.GetCurrentVendorAsync();
+        model.IsLoggedInAsVendor = currentVendor != null;
 
         //prepare localized models
         if (!excludeProperties)
@@ -949,7 +974,11 @@ public partial class ProductModelFactory : IProductModelFactory
         }
 
         //prepare model discounts
-        var availableDiscounts = await _discountService.GetAllDiscountsAsync(DiscountType.AssignedToSkus, showHidden: true, isActive: null);
+        var availableDiscounts = await _discountService.GetAllDiscountsAsync(
+            discountType: DiscountType.AssignedToSkus,
+            showHidden: true, isActive: null,
+            vendorId: currentVendor?.Id ?? 0);
+
         await _discountSupportedModelFactory.PrepareModelDiscountsAsync(model, product, availableDiscounts, excludeProperties);
         
         //prepare model stores
@@ -1713,14 +1742,41 @@ public partial class ProductModelFactory : IProductModelFactory
             localizedModelConfiguration = async (locale, languageId) =>
             {
                 locale.Name = await _localizationService.GetLocalizedAsync(productTag, entity => entity.Name, languageId, false, false);
+                locale.MetaKeywords = await _localizationService.GetLocalizedAsync(productTag, entity => entity.MetaKeywords, languageId, false, false);
+                locale.MetaDescription = await _localizationService.GetLocalizedAsync(productTag, entity => entity.MetaDescription, languageId, false, false);
+                locale.MetaTitle = await _localizationService.GetLocalizedAsync(productTag, entity => entity.MetaTitle, languageId, false, false);
             };
         }
+
+        PrepareTaggedProductsSearchModel(model.ProductTagProductSearchModel, productTag);
 
         //prepare localized models
         if (!excludeProperties)
             model.Locales = await _localizedModelFactory.PrepareLocalizedModelsAsync(localizedModelConfiguration);
 
         return model;
+    }
+
+    /// <summary>
+    /// Prepare tagged product list model
+    /// </summary>
+    /// <param name="searchModel">Product search model</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains list model for the tagged products
+    /// </returns>
+    public virtual async Task<ProductTagProductListModel> PrepareTaggedProductListModelAsync(ProductTagProductSearchModel searchModel)
+    {
+        ArgumentNullException.ThrowIfNull(searchModel);
+
+        //get products by tag
+        var products = await _productService.SearchProductsAsync(
+                productTagId: searchModel.ProductTagId,
+                showHidden: true,
+                pageIndex: searchModel.Page - 1, pageSize: searchModel.PageSize);
+
+        //prepare list model
+        return new ProductTagProductListModel().PrepareToGrid(searchModel, products, () => products.Select(product => product.ToModel<ProductModel>()));
     }
 
     /// <summary>

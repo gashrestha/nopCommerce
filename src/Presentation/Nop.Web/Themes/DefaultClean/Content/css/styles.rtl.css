@@ -2198,6 +2198,34 @@ label, label + * {
   transform: scaleX(-1);
 }
 
+.review-item-info {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px !important;
+}
+
+.vendor-product-reviews .product-review-box {
+  width: auto;
+}
+
+.vendor-product-reviews-title {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.vendor-page .block {
+  max-width: 100%;
+  text-align: right;
+}
+
+.review-item-info .review-product-name a,
+.vendor-page .block a {
+  display: inline-block;
+  color: #4ab2f1;
+  cursor: pointer;
+}
+
 .product-review-box .rating div {
   height: 14px;
   background: url('../images/rating2.png') repeat-x;
@@ -3102,7 +3130,7 @@ label, label + * {
 }
 
 .product-review-item {
-  margin: 0 0 40px;
+  margin: 0 0 20px;
 }
 
 .product-review-item .review-item-head {
@@ -3935,6 +3963,36 @@ label, label + * {
 .order-list-page .button-2:hover,
 .order-list-page .button-2:focus {
   color: #4ab2f1;
+}
+
+.order-filters {
+  display: flex;
+  flex-direction: column;
+  padding-inline: 20px;
+  padding-block-end: 20px;
+}
+
+.order-filters__row {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  margin-block-end: 10px;
+  justify-content: end;
+}
+
+.order-filters__label {
+  line-height: 26px;
+  color: #444;
+  margin-inline-end: 10px;
+  min-width: 50px;
+}
+
+.order-filters__input {
+  background-color: #fff;
+  height: 36px;
+  border: 1px solid #ddd;
+  padding: 8px;
+  vertical-align: middle;
 }
 
 .address-list-page .add-button {
@@ -6688,6 +6746,10 @@ label, label + * {
   .estimate-shipping-row-item.address-item + .estimate-shipping-row-item.address-item {
     padding-right: 0px;
     padding-top: 8px;
+  }
+
+  .order-filters__row {
+    justify-content: center;
   }
 }
 

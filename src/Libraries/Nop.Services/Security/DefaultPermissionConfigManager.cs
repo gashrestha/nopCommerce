@@ -55,9 +55,9 @@ public partial class DefaultPermissionConfigManager : IPermissionConfigManager
         
         new ("Admin area. Reports. Sales summary", Reports.SALES_SUMMARY, nameof(Reports), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Reports. Country sales", Reports.COUNTRY_SALES, nameof(Reports), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Reports. Low stock", Reports.LOW_STOCK, nameof(Reports), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Reports. Bestsellers", Reports.BESTSELLERS, nameof(Reports), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Reports. Products never purchased", Reports.PRODUCTS_NEVER_PURCHASED, nameof(Reports), NopCustomerDefaults.AdministratorsRoleName),
+        new ("Admin area. Reports. Low stock", Reports.LOW_STOCK, nameof(Reports), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.VendorsRoleName),
+        new ("Admin area. Reports. Bestsellers", Reports.BESTSELLERS, nameof(Reports), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.VendorsRoleName),
+        new ("Admin area. Reports. Products never purchased", Reports.PRODUCTS_NEVER_PURCHASED, nameof(Reports), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.VendorsRoleName),
         new ("Admin area. Reports. Registered customers", Reports.REGISTERED_CUSTOMERS, nameof(Reports), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Reports. Customers by order total", Reports.CUSTOMERS_BY_ORDER_TOTAL, nameof(Reports), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Reports. Customers by number of orders", Reports.CUSTOMERS_BY_NUMBER_OF_ORDERS, nameof(Reports), NopCustomerDefaults.AdministratorsRoleName),
@@ -90,8 +90,8 @@ public partial class DefaultPermissionConfigManager : IPermissionConfigManager
 
         #region Promotions
         
-        new ("Admin area. Discounts. View", StandardPermission.Promotions.DISCOUNTS_VIEW, nameof(StandardPermission.Promotions), NopCustomerDefaults.AdministratorsRoleName),
-        new ("Admin area. Discounts. Create, edit, delete", StandardPermission.Promotions.DISCOUNTS_CREATE_EDIT_DELETE, nameof(StandardPermission.Promotions), NopCustomerDefaults.AdministratorsRoleName),
+        new ("Admin area. Discounts. View", StandardPermission.Promotions.DISCOUNTS_VIEW, nameof(StandardPermission.Promotions), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.VendorsRoleName),
+        new ("Admin area. Discounts. Create, edit, delete", StandardPermission.Promotions.DISCOUNTS_CREATE_EDIT_DELETE, nameof(StandardPermission.Promotions), NopCustomerDefaults.AdministratorsRoleName, NopCustomerDefaults.VendorsRoleName),
         new ("Admin area. Affiliates. View", StandardPermission.Promotions.AFFILIATES_VIEW, nameof(StandardPermission.Promotions), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Affiliates. Create, edit, delete", StandardPermission.Promotions.AFFILIATES_CREATE_EDIT_DELETE, nameof(StandardPermission.Promotions), NopCustomerDefaults.AdministratorsRoleName),
         new ("Admin area. Newsletter Subscribers. View", StandardPermission.Promotions.SUBSCRIBERS_VIEW, nameof(StandardPermission.Promotions), NopCustomerDefaults.AdministratorsRoleName),

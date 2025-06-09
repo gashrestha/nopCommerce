@@ -25,6 +25,7 @@ public partial record ShoppingCartModel : BaseNopModel
     public bool ShowSku { get; set; }
     public bool ShowProductImages { get; set; }
     public bool IsEditable { get; set; }
+    public bool IsReadyToCheckout { get; set; }
     public IList<ShoppingCartItemModel> Items { get; set; }
 
     public IList<CheckoutAttributeModel> CheckoutAttributes { get; set; }
@@ -176,7 +177,7 @@ public partial record ShoppingCartModel : BaseNopModel
             BillingAddress = new AddressModel();
             ShippingAddress = new AddressModel();
             PickupAddress = new AddressModel();
-            CustomValues = new Dictionary<string, object>();
+            CustomValues = new Dictionary<string, string>();
         }
         public bool Display { get; set; }
 
@@ -190,7 +191,7 @@ public partial record ShoppingCartModel : BaseNopModel
 
         public string PaymentMethod { get; set; }
 
-        public Dictionary<string, object> CustomValues { get; set; }
+        public Dictionary<string, string> CustomValues { get; set; }
     }
 
     #endregion

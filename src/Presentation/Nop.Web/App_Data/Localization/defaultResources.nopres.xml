@@ -58,7 +58,7 @@
     <Value>Delete selected</Value>
   </LocaleResource>
   <LocaleResource Name="Account.BackInStockSubscriptions.Description">
-    <Value>You will receive an e-mail when a particular product is back in stock.</Value>
+    <Value>You will receive an email when a particular product is back in stock.</Value>
   </LocaleResource>
   <LocaleResource Name="Account.BackInStockSubscriptions.NoSubscriptions">
     <Value>You are not currently subscribed to any Back In Stock notification lists</Value>
@@ -138,9 +138,9 @@
   <LocaleResource Name="Account.CustomerAddresses.AddNew">
     <Value>Add new address</Value>
   </LocaleResource>
-   <LocaleResource Name="Account.CustomerAddresses.Added">
-     <Value>The new address has been added successfully.</Value>
-   </LocaleResource>
+  <LocaleResource Name="Account.CustomerAddresses.Added">
+    <Value>The new address has been added successfully.</Value>
+  </LocaleResource>
   <LocaleResource Name="Account.CustomerAddresses.Edit">
     <Value>Edit address</Value>
   </LocaleResource>
@@ -154,7 +154,7 @@
     <Value>Customer info</Value>
   </LocaleResource>
   <LocaleResource Name="Account.CustomerInfo.Updated">
-        <Value>The customer info has been updated successfully.</Value>
+    <Value>The customer info has been updated successfully.</Value>
   </LocaleResource>
   <LocaleResource Name="Account.CustomerOrders">
     <Value>Orders</Value>
@@ -176,6 +176,9 @@
   </LocaleResource>
   <LocaleResource Name="Account.CustomerOrders.OrderTotal">
     <Value>Order Total</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.CustomerOrders.Period">
+    <Value>Orders from</Value>
   </LocaleResource>
   <LocaleResource Name="Account.CustomerOrders.RecurringOrders">
     <Value>Recurring payments</Value>
@@ -252,6 +255,12 @@
   <LocaleResource Name="Account.CustomerReturnRequests.UploadedFile.Download">
     <Value>Download</Value>
   </LocaleResource>
+  <LocaleResource Name="Account.CustomerRecurringPayments">
+    <Value>Recurring payments</Value>
+  </LocaleResource>
+  <LocaleResource Name="Account.CustomerRecurringPayments.NoPayments">
+    <Value>No payments</Value>
+  </LocaleResource>
   <LocaleResource Name="Account.DownloadableProducts">
     <Value>Downloadable products</Value>
   </LocaleResource>
@@ -265,10 +274,10 @@
     <Value>Your email has been validated</Value>
   </LocaleResource>
   <LocaleResource Name="Account.EmailUsernameErrors.EmailAlreadyExists">
-    <Value>The e-mail address is already in use</Value>
+    <Value>The email address is already in use</Value>
   </LocaleResource>
   <LocaleResource Name="Account.EmailUsernameErrors.EmailTooLong">
-    <Value>E-mail address is too long</Value>
+    <Value>Email address is too long</Value>
   </LocaleResource>
   <LocaleResource Name="Account.EmailUsernameErrors.NewEmailIsNotValid">
     <Value>New email is not valid</Value>
@@ -370,7 +379,7 @@
     <Value>Male</Value>
   </LocaleResource>
   <LocaleResource Name="Account.Fields.Gender.Neutral">
-      <Value>Neutral</Value>
+    <Value>Neutral</Value>
   </LocaleResource>
   <LocaleResource Name="Account.Fields.LastName">
     <Value>Last name</Value>
@@ -451,7 +460,7 @@
     <Value>Delete Selected</Value>
   </LocaleResource>
   <LocaleResource Name="Account.ForumSubscriptions.Description">
-    <Value>You will receive an e-mail when a new forum topic/post is created.</Value>
+    <Value>You will receive an email when a new forum topic/post is created.</Value>
   </LocaleResource>
   <LocaleResource Name="Account.ForumSubscriptions.InfoColumn">
     <Value>Forum/Topic</Value>
@@ -1152,11 +1161,17 @@
   <LocaleResource Name="ActivityLog.PublicStore.AddToWishlist">
     <Value>Added a product to wishlist ('{0}')</Value>
   </LocaleResource>
+  <LocaleResource Name="ActivityLog.PublicStore.PasswordChanged">
+    <Value>Public store. Customer has changed the password</Value>
+  </LocaleResource>
   <LocaleResource Name="ActivityLog.PublicStore.ContactUs">
     <Value>Used contact us form</Value>
   </LocaleResource>
-  <LocaleResource Name="ActivityLog.PublicStore.Login">
-    <Value>Login</Value>
+  <LocaleResource Name="ActivityLog.PublicStore.Login.Success">
+    <Value>Public store. Customer has logged in</Value>
+  </LocaleResource>
+  <LocaleResource Name="ActivityLog.PublicStore.Login.Fail">
+    <Value>Public store. Customer has failed to log in: {0}</Value>
   </LocaleResource>
   <LocaleResource Name="ActivityLog.PublicStore.Logout">
     <Value>Logout</Value>
@@ -1956,11 +1971,23 @@
   <LocaleResource Name="Admin.Catalog.Attributes.ProductAttributes.UsedByProducts.Published">
     <Value>Published</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Attributes.ProductAttributes.List.SearchProductAttributeName">
+    <Value>Product attribute name</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Attributes.ProductAttributes.List.SearchProductAttributeName.Hint">
+    <Value>A product attribute name.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.SpecificationAttributes">
     <Value>Specification attributes</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.SpecificationAttributes.Description">
     <Value>Specification attributes are product features i.e, screen size, number of USB-ports, visible on product details page. Specification attributes can be used for filtering products on the category details page. Unlike product attributes, specification attributes are used for information purposes only. You can add attributes to existing product on a product details page.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Attributes.SpecificationAttributes.List.SearchName">
+    <Value>Name</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Attributes.SpecificationAttributes.List.SearchName.Hint">
+    <Value>Search by specification attribute name.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Attributes.SpecificationAttributes.SpecificationAttribute.Added">
     <Value>The new attribute has been added successfully.</Value>
@@ -2733,6 +2760,15 @@
   <LocaleResource Name="Admin.Catalog.Products.BackToList">
     <Value>back to product list</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.BulkEdit">
+    <Value>Bulk edit products</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.BulkEdit.SaveSelected">
+    <Value>Save selected</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.BulkEdit.SaveAll">
+    <Value>Save all</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Copied">
     <Value>The product has been copied successfully</Value>
   </LocaleResource>
@@ -2801,6 +2837,15 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.AdminComment.Hint">
     <Value>This comment is for internal use only, not visible for customers.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.Fields.AgeVerification">
+    <Value>Age verification</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.Fields.AgeVerification.Hint">
+    <Value>Check to require customer registration with date of birth before placing an order.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.Fields.AgeVerification.DateOfBirthDisabled">
+    <Value><![CDATA[It looks like you have <a href="{0}" target="_blank">Date of Birth</a> setting disabled.]]></Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.AllowAddingOnlyExistingAttributeCombinations">
     <Value>Allow only existing attribute combinations</Value>
@@ -2947,7 +2992,7 @@
     <Value>Display only uploaded images of attribute combination</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.DisplayAttributeCombinationImagesOnly.Hint">
-    <Value>You may choose pictures associated to each product attribute value or attribute combination (these pictures will replace the main product image when this product attribute value or attribute combination is selected). Enable this option if you want to display only images of a chosen product attribute value or a attribute combination (other pictures will be hidden). Otherwise, all uploaded pictures will be displayed on the product details page.</Value>
+    <Value>You may choose pictures associated to each product attribute value or attribute combination (these pictures will replace the main product image when this product attribute value or attribute combination is selected). Enable this option if you want to display only images of a chosen product attribute value or an attribute combination (other pictures will be hidden). Otherwise, all uploaded pictures will be displayed on the product details page.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.DisplayOrder">
     <Value>Display order</Value>
@@ -3149,6 +3194,15 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.MetaTitle.Hint">
     <Value>Override the page title. The default is the name of the product.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.Fields.MinimumAgeToPurchase">
+    <Value>Minimum age to purchase</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.Fields.MinimumAgeToPurchase.Hint">
+    <Value>Enter the minimum age for purchasing this product.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.Fields.MinimumAgeToPurchase.ShouldBeGreaterThanZero">
+    <Value>The minimum age for purchasing should be greater 0</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Fields.MinimumCustomerEnteredPrice">
     <Value>Minimum amount</Value>
@@ -3533,15 +3587,18 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Multimedia">
     <Value>Multimedia</Value>
-  </LocaleResource>  
+  </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Multimedia.Pictures">
     <Value>Pictures</Value>
-  </LocaleResource>  
+  </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Multimedia.Pictures.AddNew">
     <Value>Add a new picture</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Multimedia.Pictures.Alert.PictureAdd">
     <Value>Failed to add product picture.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.Products.Multimedia.Pictures.Alert.VendorNumberPicturesLimit">
+    <Value>The maximum number of product pictures has been reached.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Multimedia.Pictures.Fields.DisplayOrder">
     <Value>Display order</Value>
@@ -3586,10 +3643,10 @@
     <Value>Video URL is required.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Multimedia.Videos.Alert.VideoUpdate">
-     <Value>Failed to update product video.</Value>
+    <Value>Failed to update product video.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Multimedia.Videos.Description">
-     <Value><![CDATA[How to embed a video: Find your video in your library (on any video hosting) and select it to open the video settings page. Select the privacy icon from your "Share" button. Click on "Embed" from the window that opens up. You can copy the <strong>src</strong> from the embed option and use it.]]></Value>
+    <Value><![CDATA[How to embed a video: Find your video in your library (on any video hosting) and select it to open the video settings page. Select the privacy icon from your "Share" button. Click on "Embed" from the window that opens up. You can copy the <strong>src</strong> from the embed option and use it.]]></Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Multimedia.Videos.Fields.DisplayOrder">
     <Value>Display order</Value>
@@ -4184,7 +4241,7 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.Products.Updated">
     <Value>The product has been updated successfully.</Value>
-  </LocaleResource>  
+  </LocaleResource>
   <LocaleResource Name="Admin.Catalog.ProductTags">
     <Value>Product tags</Value>
   </LocaleResource>
@@ -4196,6 +4253,24 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.ProductTags.EditTagDetails">
     <Value>Edit product tag details</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.ProductTags.Fields.MetaKeywords">
+    <Value>Meta keywords</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.ProductTags.Fields.MetaKeywords.Hint">
+    <Value>Meta keywords to be added to product tag page header.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.ProductTags.Fields.MetaDescription">
+    <Value>Meta description</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.ProductTags.Fields.MetaDescription.Hint">
+    <Value>Meta description to be added to product tag page header.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.ProductTags.Fields.MetaTitle">
+    <Value>Meta title</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.ProductTags.Fields.MetaTitle.Hint">
+    <Value>Override the page title. The default is the name of the product tag.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.ProductTags.Fields.Name">
     <Value>Tag name</Value>
@@ -4214,6 +4289,21 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.ProductTags.Fields.SearchTagName.Hint">
     <Value>Search by a tag name.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.ProductTags.Info">
+    <Value>Product tag info</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.ProductTags.Seo">
+    <Value>SEO</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.ProductTags.TaggedProducts">
+    <Value>Used by products</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.ProductTags.TaggedProducts.Product">
+    <Value>Product</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Catalog.ProductTags.TaggedProducts.Published">
+    <Value>Published</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Catalog.ProductTags.Updated">
     <Value>The product tag has been updated successfully.</Value>
@@ -4402,7 +4492,7 @@
     <Value>No customer roles available</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.ACL.NoPermissionsDefined">
-     <Value>No permissions defined</Value>
+    <Value>No permissions defined</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.ACL.Permission">
     <Value>Permission name</Value>
@@ -4421,52 +4511,7 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.AppSettings">
     <Value>App settings</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob">
-    <Value>Azure Blob storage configuration</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob.AppendContainerName">
-    <Value>Append container name</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob.AppendContainerName.Hint">
-    <Value>Enable this setting to append the endpoint with the container name when constructing the URL.</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob.ConnectionString">
-    <Value>Connection string</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob.ConnectionString.Hint">
-    <Value>Specify the connection string for Azure Blob storage.</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob.ContainerName">
-    <Value>Container name</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob.ContainerName.Hint">
-    <Value>Specify the container name for Azure Blob storage.</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob.DataProtectionKeysContainerName">
-    <Value>Container name for Data Protection keys</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob.DataProtectionKeysContainerName.Hint">
-    <Value>Specify the container name for the Data Protection keys. This should be a private container separate from the Blob container used for media storage.</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob.DataProtectionKeysVaultId">
-    <Value>Key vault ID</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob.DataProtectionKeysVaultId.Hint">
-    <Value>Specify the Azure key vault ID used to encrypt the Data Protection keys.</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob.EndPoint">
-    <Value>Endpoint</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob.EndPoint.Hint">
-    <Value>Specify the endpoint for Azure Blob storage.</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob.StoreDataProtectionKeys">
-    <Value>Store Data Protection keys</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.AzureBlob.StoreDataProtectionKeys.Hint">
-    <Value>Enable this setting to store the Data Protection keys in Azure Blob Storage.</Value>
-  </LocaleResource>
+  </LocaleResource>  
   <LocaleResource Name="Admin.Configuration.AppSettings.Cache">
     <Value>Cache configuration</Value>
   </LocaleResource>
@@ -4504,22 +4549,16 @@
     <Value>Enable this setting to display the full error in production environment. It's ignored (always enabled) in development environment.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.AppSettings.Common.PermitLimit">
-     <Value>Permit limit</Value>
+    <Value>Permit limit</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.AppSettings.Common.PermitLimit.Hint">
-     <Value>Maximum number of permit counters that can be allowed in a window (1 minute). Must be set to a value > 0 by the time these options are passed to the constructor of FixedWindowRateLimiter. If set to 0 than limitation is off.</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.Common.PluginStaticFileExtensionsBlacklist">
-    <Value>Plugin static file extensions blacklist</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.Common.PluginStaticFileExtensionsBlacklist.Hint">
-    <Value>Specify the blacklist of static file extension for plugin directories.</Value>
-  </LocaleResource>
+    <Value>Maximum number of permit counters that can be allowed in a window (1 minute). Must be set to a value > 0 by the time these options are passed to the constructor of FixedWindowRateLimiter. If set to 0 than limitation is off.</Value>
+  </LocaleResource>  
   <LocaleResource Name="Admin.Configuration.AppSettings.Common.QueueCount">
     <Value>Queue count</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.AppSettings.Common.QueueCount.Hint">
-    <Value>Maximum cumulative permit count of queued acquisition requests. Must be set to a value >= 0 by the time these options are passed to the constructor of FixedWindowRateLimiter. If set to 0 than Queue is off.</Value>
+    <Value>Maximum cumulative permit count of queued acquisition requests. Must be set to a value >= 0 by the time these options are passed to the constructor of FixedWindowRateLimiter. If set to 0 then the Queue is off.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.AppSettings.Common.RejectionStatusCode">
     <Value>Rejection status code</Value>
@@ -4668,12 +4707,6 @@
   <LocaleResource Name="Admin.Configuration.AppSettings.Hosting.KnownNetworks.Hint">
     <Value>Specify a list of IP CIDR notations (comma separated) to accept forwarded headers. e.g. 172.64.0.0/13,162.158.0.0/15</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.Hosting.PathBase">
-    <Value>Path base</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.Configuration.AppSettings.Hosting.PathBase.Hint">
-    <Value>Ability to set a custom path base, for example domain.com/path/</Value>
-  </LocaleResource>    
   <LocaleResource Name="Admin.Configuration.AppSettings.Hosting.UseProxy">
     <Value>Use proxy servers</Value>
   </LocaleResource>
@@ -5676,6 +5709,12 @@
   <LocaleResource Name="Admin.Configuration.Plugins.ReloadList.Progress">
     <Value>Reloading plugin list...</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Plugins.SearchProvider.BackToList">
+    <Value>back to plugin list</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Plugins.SearchProvider.Configure">
+    <Value>Configure</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Plugins.Upload">
     <Value>Upload plugin or theme</Value>
   </LocaleResource>
@@ -6009,6 +6048,12 @@
   <LocaleResource Name="Admin.Configuration.Settings.Catalog.ExportImportCategoriesUsingCategoryName.Hint">
     <Value>Check if categories should be exported/imported using name of category.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Catalog.ExportImportCategoryUseLimitedToStores">
+    <Value>Export/Import categories with "limited to stores"</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Catalog.ExportImportCategoryUseLimitedToStores.Hint">
+    <Value>Check if categories should be exported/imported with "limited to stores" property.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Catalog.ExportImportProductAttributes">
     <Value>Export/Import products with attributes</Value>
   </LocaleResource>
@@ -6044,6 +6089,12 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Catalog.ExportImportSplitProductsFile.Hint">
     <Value>Check if you want to import products from individual files of the optimal size, which were automatically created from the main file. This function will help you import a large amount of data with a smaller delay.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Catalog.ExportImportTierPrices">
+    <Value>Export/Import products with tier prices</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Catalog.ExportImportTierPrices.Hint">
+    <Value>Check if products should be exported/imported with tier prices.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Catalog.IgnoreAcl">
     <Value>Ignore ACL rules (sitewide)</Value>
@@ -6782,15 +6833,15 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.CustomerUser.GenderEnabled">
     <Value>'Gender' enabled</Value>
-  </LocaleResource>  
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.CustomerUser.GenderEnabled.Hint">
     <Value>Set if 'Gender' is enabled.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.CustomerUser.NeutralGenderEnabled">
-      <Value>'Neutral' option enabled</Value>
+    <Value>'Neutral' option enabled</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.CustomerUser.NeutralGenderEnabled.Hint">
-      <Value>Set if you need three gender options available - Male, female, neutral (as per German laws).</Value>
+    <Value>Set if you need three gender options available - Male, female, neutral (as per German laws).</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.CustomerUser.HideBackInStockSubscriptionsTab">
     <Value>Hide 'Back in stock subscriptions' tab</Value>
@@ -6839,6 +6890,12 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.CustomerUser.NewsletterTickedByDefault.Hint">
     <Value>A value indicating whether 'Newsletter' checkbox is ticked by default on the registration page.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.CustomerUser.NotifyFailedLoginAttempt">
+    <Value>Notify customers about failed login attempts</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.CustomerUser.NotifyFailedLoginAttempt.Hint">
+    <Value>Check to enable customer notifications on failed login attempts.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.CustomerUser.NotifyNewCustomerRegistration">
     <Value>Notify about new customer registration</Value>
@@ -7305,6 +7362,12 @@
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.AdminArea.UseRichEditorInMessageTemplates.Hint">
     <Value>Indicates whether to use rich editor on message templates and campaigns details pages.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.AdminArea.UseStickyHeaderLayout">
+    <Value>Use sticky header</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.AdminArea.UseStickyHeaderLayout.Hint">
+    <Value>The content header (containing the action buttons) will stick to the top when you reach its scroll position.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.AdminAreaAllowedIpAddresses">
     <Value>Admin area allowed IP</Value>
   </LocaleResource>
@@ -7333,7 +7396,7 @@
     <Value>Common</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.BlockTitle.CustomHtml">
-      <Value>Custom HTML</Value>
+    <Value>Custom HTML</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.BlockTitle.FaviconAndAppIcons">
     <Value>Favicon and app icons</Value>
@@ -7398,11 +7461,17 @@
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.CaptchaShowOnBlogCommentPage.Hint">
     <Value>Check to show CAPTCHA on blog page when writing a comment.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.CaptchaShowOnCheckGiftCardBalance">
+    <Value>Show on check gift card balance page</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.CaptchaShowOnCheckGiftCardBalance.Hint">
+    <Value>Check to show CAPTCHA on check gift card balance page.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.CaptchaShowOnCheckoutPageForGuests">
-      <Value>Show on checkout page for guests</Value>
+    <Value>Show on checkout page for guests</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.CaptchaShowOnCheckoutPageForGuests.Hint">
-      <Value>Check to show CAPTCHA on checkout page for guests.</Value>
+    <Value>Check to show CAPTCHA on checkout page for guests.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.CaptchaShowOnContactUsPage">
     <Value>Show on contact us page</Value>
@@ -7678,10 +7747,10 @@
     <Value>Upload single icon or archive with favicon and app icons for different operating systems and devices. You can see an example of the favicon and app icons archive in /icons/samples in the root of the site. Your favicon and app icons path is "/icons/icons_{0}"</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.FooterCustomHtml">
-      <Value>Footer custom HTML</Value>
+    <Value>Footer custom HTML</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.FooterCustomHtml.Hint">
-      <Value>Enter custom HTML here for footer section.</Value>
+    <Value>Enter custom HTML here for footer section.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.GenerateProductMetaDescription">
     <Value>Generate product META description</Value>
@@ -7690,12 +7759,12 @@
     <Value>When enabled, product META descriptions will be automatically generated (if not specified on the product details page) based on product short description.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.HeaderCustomHtml">
-      <Value>Header custom HTML</Value>
+    <Value>Header custom HTML</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.HeaderCustomHtml.Hint">
-      <Value>Enter custom HTML here for header section.</Value>
+    <Value>Enter custom HTML here for header section.</Value>
   </LocaleResource>
-    <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.HoneypotEnabled">
+  <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.HoneypotEnabled">
     <Value>Enable honeypot</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.GeneralCommon.HoneypotEnabled.Hint">
@@ -8514,6 +8583,9 @@
   <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.AdminComment">
     <Value>Admin comment</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.AgeVerification">
+    <Value>Age verification</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.ProductEditor.AllowAddingOnlyExistingAttributeCombinations">
     <Value>Allow only existing attribute combinations</Value>
   </LocaleResource>
@@ -9213,6 +9285,24 @@
   <LocaleResource Name="Admin.Configuration.Settings.Tax.HideZeroTax.Hint">
     <Value>A value indicating whether to hide zero tax in order summary.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Tax.HmrcApiUrl">
+    <Value>HMRC API URL</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Tax.HmrcApiUrl.Hint">
+    <Value>The base HMRC access API URL.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Tax.HmrcClientId">
+    <Value>HMRC API client ID</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Tax.HmrcClientId.Hint">
+    <Value>Your HMRC API client ID is a unique identifier which created when you added your application.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Tax.HmrcClientSecret">
+    <Value>HMRC API client secret</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Settings.Tax.HmrcClientSecret.Hint">
+    <Value>Your client secret is a unique passphrase that you generate to authorise your application.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Tax.PaymentMethodAdditionalFeeIncludesTax">
     <Value>Payment method additional fee includes tax</Value>
   </LocaleResource>
@@ -9254,7 +9344,7 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Tax.ShippingTaxClass.Hint">
     <Value>Select tax category used for shipping tax calculation.</Value>
-  </LocaleResource>  
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Settings.Tax.TaxBasedOn">
     <Value>Tax based on</Value>
   </LocaleResource>
@@ -9936,11 +10026,11 @@
   <LocaleResource Name="Admin.ConfigurationSteps.EditServicesInfo.Title">
     <Value>Edit services info</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.ConfigurationSteps.EmailAccount.DefaultCredentials.Text">
-    <Value>Check to use default credentials for the connection.</Value>
+  <LocaleResource Name="Admin.ConfigurationSteps.EmailAccount.AuthenticationMethod.Text">
+    <Value>Select one of the available authentication methods and enter your credentials if required.</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.ConfigurationSteps.EmailAccount.DefaultCredentials.Title">
-    <Value>Use default credentials</Value>
+  <LocaleResource Name="Admin.ConfigurationSteps.EmailAccount.AuthenticationMethod.Title">
+    <Value>Authentication method</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.EmailAccount.DisplayName.Text">
     <Value>Enter the displayed name for outgoing emails of your store. For example, “Your store sales department”.</Value>
@@ -9960,12 +10050,6 @@
   <LocaleResource Name="Admin.ConfigurationSteps.EmailAccount.Host.Title">
     <Value>Host</Value>
   </LocaleResource>
-  <LocaleResource Name="Admin.ConfigurationSteps.EmailAccount.Password.Text">
-    <Value>This is the password you use to authenticate to your mail server.</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.ConfigurationSteps.EmailAccount.Password.Title">
-    <Value>Password</Value>
-  </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.EmailAccount.Port.Text">
     <Value>Enter the SMTP port of your email server. This is usually port 25.</Value>
   </LocaleResource>
@@ -9977,12 +10061,6 @@
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.EmailAccount.TestEmail.Title">
     <Value>Send test email</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.ConfigurationSteps.EmailAccount.Username.Text">
-    <Value>Enter the user name which is used to authenticate to your email server.</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.ConfigurationSteps.EmailAccount.Username.Title">
-    <Value>Username</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.EmailAccount.UseSsl.Text">
     <Value>Check to use Secure Sockets Layer (SSL) to encrypt the SMTP connection.</Value>
@@ -10033,19 +10111,25 @@
     <Value>Check/money order</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.PaymentMethods.Configure.Text">
-    <Value><![CDATA[You can configure each payment method by clicking the appropriate <b>Configure</b> button. Now we’ll configure the PayPal Commerce payment method.]]></Value>
+    <Value><![CDATA[You can configure each payment method by clicking the appropriate <b>Configure</b> button.]]></Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.PaymentMethods.Configure.Title">
-    <Value>Configure PayPal Commerce</Value>
-  </LocaleResource>  
+    <Value>Configure a payment method</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.PaymentMethods.Manual.Text">
     <Value><![CDATA[This is a special payment plugin that allows all orders to be successfully entered on the website, but it does NOT really charge a customer or make any calls to any live payment gateway. This payment method is recommended if you want to perform one of the following: <ul><li>Process all orders offline</li><li>Process them manually via another back-office system</li><li>Test the site end-to-end before going live</li></ul>]]></Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.PaymentMethods.Manual.Title">
     <Value>Credit card (manual)</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ConfigurationSteps.PaymentMethods.PayPalCommerce.Configure.Text">
+    <Value>Now we’ll configure the PayPal Commerce payment method.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ConfigurationSteps.PaymentMethods.PayPalCommerce.Configure.Title">
+    <Value>Configure PayPal Commerce</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.PaymentPayPal.ApiCredentials.Text">
-    <Value><![CDATA[If you already have an app created in your PayPal account or would like to test it in the sandbox mode, follow these steps.]]></Value>
+    <Value><![CDATA[If you already have an app created in your PayPal account, follow these steps.]]></Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.PaymentPayPal.ApiCredentials.Title">
     <Value>Specify API credentials</Value>
@@ -10057,7 +10141,7 @@
     <Value>Configured</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.PaymentPayPal.Credentials.Text">
-    <Value><![CDATA[After you create and set up your application in your <b>PayPal</b> account, you need to copy the <b>Client ID</b> and <b>Secret</b>, and paste them into these fields.]]></Value>
+    <Value><![CDATA[After you create and set up your application in your <b>PayPal</b> account, you need to copy the <b>Client ID</b>, <b>Secret</b> and <b>Merchant ID</b>, and paste them into these fields.]]></Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.PaymentPayPal.Credentials.Title">
     <Value>Credentials</Value>
@@ -10075,10 +10159,7 @@
     <Value>Feature PayPal Prominently</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.PaymentPayPal.Register.Text">
-    <Value><![CDATA[Enter your email address and let PayPal check everything out by clicking the <b>Save</b> button.]]></Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.ConfigurationSteps.PaymentPayPal.Register.Text2">
-    <Value><![CDATA[If everything is OK, you will see the green notification and a newly added <b>Sign up for PayPal</b> button. Click this button to register an account. You need to go through a few steps to fill in all the required data. The last step will be to verify your email address in order to activate your account.]]></Value>
+    <Value>Click this button to register an account. You need to go through a few steps to fill in all the required data. The last step will be to verify your email address to activate your account.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.PaymentPayPal.Register.Title">
     <Value>Register an account</Value>
@@ -10088,12 +10169,6 @@
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.PaymentPayPal.Sandbox.Title">
     <Value>Sandbox</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.ConfigurationSteps.PaymentPayPal.SignUp.Text">
-    <Value><![CDATA[You have two options to do this: you can either register an account on the PayPal website or you can do this from the plugin configuration page. Let’s register an account from the plugin configuration page.]]></Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.ConfigurationSteps.PaymentPayPal.SignUp.Title">
-    <Value>Create a PayPal account</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.PaymentMethods.PaymentMethods.Text">
     <Value>You can see all the payment methods (plugins) allowed to use in your store on this page. However, you can always find much more in our marketplace.</Value>
@@ -10144,7 +10219,7 @@
     <Value>“Powered by” link</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.Product.Details.Text">
-    <Value><![CDATA[Enter the relevant product details in these fields. The screenshot below shows how they will be displayed on the product page with the default nopCommerce theme: <div><img src="js/admintour/images/product-page.jpg"/></div>]]></Value>
+    <Value><![CDATA[Enter the relevant product details in these fields. The screenshot below shows how they will be displayed on the product page with the default nopCommerce theme: <div class="row row-cols-1"><img class="img-thumbnail mt-3" src="/js/admintour/images/product-page.jpg"/></div>]]></Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.Product.Details.Title">
     <Value>Product details</Value>
@@ -10737,6 +10812,9 @@
   <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Description.OrderCompleted.CustomerNotification">
     <Value>This message template is used to notify a customer that the certain order was completed. The order gets the order status Complete when it's paid and delivered, or it can be changed manually to Complete in Sales - Orders.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Description.OrderCompleted.StoreOwnerNotification">
+    <Value>This message template is used to notify a store owner that the certain order was completed. The order gets the order status Complete when it's paid and delivered, or it can be changed manually to Complete in Sales - Orders.</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Description.OrderPaid.AffiliateNotification">
     <Value>This message template is used to notify an affiliate that the certain order was paid. The order gets the status Paid when the amount was charged.</Value>
   </LocaleResource>
@@ -10849,7 +10927,7 @@
     <Value>BCC</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Fields.BccEmailAddresses.Hint">
-    <Value>The blind carbon copy (BCC) recipients for this e-mail message.</Value>
+    <Value>The blind carbon copy (BCC) recipients for this email message.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Fields.Body">
     <Value>Body</Value>
@@ -10870,7 +10948,7 @@
     <Value>Allow direct reply</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Fields.AllowDirectReply.Hint">
-   <Value>When checked, the store owner can reply directly to the customer's email address from mailbox when a customer-related message is received.</Value>
+    <Value>When checked, the store owner can reply directly to the customer's email address from mailbox when a customer-related message is received.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.MessageTemplates.Fields.EmailAccount">
     <Value>Email account</Value>
@@ -11324,6 +11402,21 @@
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Topics.Fields.AccessibleWhenStoreClosed.Hint">
     <Value>Check to allow customer to view this topic details page when the store is closed.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.Topics.Fields.AvailableEndDateTime">
+    <Value>Availability end date</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.Topics.Fields.AvailableEndDateTime.Hint">
+    <Value>The end of the topic's availability (UTC).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.Topics.Fields.AvailableEndDateTime.GreaterThanOrEqualToStartDate">
+    <Value>The end date must be greater than or equal to the start date.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.Topics.Fields.AvailableStartDateTime">
+    <Value>Availability start date</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.ContentManagement.Topics.Fields.AvailableStartDateTime.Hint">
+    <Value>The start of the topic's availability (UTC).</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ContentManagement.Topics.Fields.Body">
     <Value>Body</Value>
@@ -11980,7 +12073,7 @@
     <Value>Male</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Fields.Gender.Neutral">
-      <Value>Neutral</Value>
+    <Value>Neutral</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Customers.Customers.Fields.IPAddress">
     <Value>IP Address</Value>
@@ -12983,6 +13076,9 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Address.County">
     <Value>County / region</Value>
+  </LocaleResource>  
+  <LocaleResource Name="Admin.Orders.Address.CustomAttributes">
+    <Value>Custom Attributes</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders.Address.EditAddress">
     <Value>Edit address</Value>
@@ -14049,6 +14145,21 @@
   <LocaleResource Name="Admin.Promotions.Campaigns.BackToList">
     <Value>back to campaign list</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Promotions.Campaigns.Copy">
+    <Value>New campaign name</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Promotions.Campaigns.Copied">
+    <Value>The campaign has been copied successfully</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Promotions.Campaigns.Copy.Name">
+    <Value>New campaign name</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Promotions.Campaigns.Copy.Name.Hint">
+    <Value>The name of the new campaign.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Promotions.Campaigns.Copy.Name.New">
+    <Value>{0} - copy</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Promotions.Campaigns.Deleted">
     <Value>The campaign has been deleted successfully.</Value>
   </LocaleResource>
@@ -14322,6 +14433,15 @@
   <LocaleResource Name="Admin.Promotions.Discounts.Fields.UsePercentage.Hint">
     <Value>Determines whether to apply a percentage discount to the order/SKUs. If not enabled, a set value is discounted.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Promotions.Discounts.Fields.Vendor">
+    <Value>Vendor</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Promotions.Discounts.Fields.Vendor.Hint">
+    <Value>Choose a vendor associated with this discount. The associated vendor will have the ability to manage this discount.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Promotions.Discounts.Fields.Vendor.None">
+    <Value>No vendor</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Promotions.Discounts.History">
     <Value>Usage history</Value>
   </LocaleResource>
@@ -14384,6 +14504,12 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Promotions.Discounts.List.SearchStartDate.Hint">
     <Value>The start date for the search.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Promotions.Discounts.List.SearchVendor">
+    <Value>Vendor</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Promotions.Discounts.List.SearchVendor.Hint">
+    <Value>Search by a specific vendor.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Promotions.Discounts.Requirements">
     <Value>Requirements</Value>
@@ -15944,13 +16070,7 @@
   </LocaleResource>
   <LocaleResource Name="Admin.System.SystemInfo.ASPNETInfo.Hint">
     <Value>ASP.NET info.</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.System.SystemInfo.AzureBlobStorageEnabled">
-    <Value>Azure Blob Storage enabled</Value>
-  </LocaleResource>
-  <LocaleResource Name="Admin.System.SystemInfo.AzureBlobStorageEnabled.Hint">
-    <Value>Indicates whether Azure Blob Storage is enabled.</Value>
-  </LocaleResource>
+  </LocaleResource> 
   <LocaleResource Name="Admin.System.SystemInfo.CurrentStaticCacheManager">
     <Value>Static cache manager name</Value>
   </LocaleResource>
@@ -15962,6 +16082,12 @@
   </LocaleResource>
   <LocaleResource Name="Admin.System.SystemInfo.CurrentUserTime.Hint">
     <Value>Current user time (based on specified datetime and timezone settings).</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.SystemInfo.DatabaseCollation">
+    <Value>Database collation</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.SystemInfo.DatabaseCollation.Hint">
+    <Value>The collation defines the rules for sorting and comparing data.</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.System.SystemInfo.Headers">
     <Value>Headers</Value>
@@ -16377,6 +16503,18 @@
   <LocaleResource Name="Admin.Vendors.Fields.Picture.Hint">
     <Value>The vendor picture.</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Vendors.Fields.PmCustomerId">
+    <Value>Customer for PM</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Vendors.Fields.PmCustomerId.Choose">
+    <Value>Choose</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Vendors.Fields.PmCustomerId.Hint">
+    <Value>Choose the customer for using private messages. Then customers will see the "Send private message" button on the vendor details page.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Vendors.Fields.PmCustomerId.Remove">
+    <Value>Remove</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Vendors.Fields.PriceFrom">
     <Value>Price 'from'</Value>
   </LocaleResource>
@@ -16427,6 +16565,9 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Vendors.VendorAttributes">
     <Value>Vendor attributes</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Vendors.PmCustomer.Choose">
+    <Value>Choose</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Vendors.VendorAttributes.Added">
     <Value>The new attribute has been added successfully.</Value>
@@ -16564,7 +16705,7 @@
     <Value>Receive an email when this arrives in stock</Value>
   </LocaleResource>
   <LocaleResource Name="BackInStockSubscriptions.Tooltip">
-    <Value>You'll receive a onetime e-mail when this product is available for ordering again. We will not send you any other e-mails or add you to our newsletter; you will only be e-mailed about this product!</Value>
+    <Value>You'll receive a onetime email when this product is available for ordering again. We will not send you any other emails or add you to our newsletter; you will only be emailed about this product!</Value>
   </LocaleResource>
   <LocaleResource Name="BackInStockSubscriptions.Unsubscribe">
     <Value>Unsubscribe</Value>
@@ -16790,9 +16931,6 @@
   </LocaleResource>
   <LocaleResource Name="Checkout.Progress.Shipping">
     <Value>Shipping</Value>
-  </LocaleResource>
-  <LocaleResource Name="Checkout.RedirectMessage">
-    <Value>Redirected</Value>
   </LocaleResource>
   <LocaleResource Name="Checkout.SelectBillingAddress">
     <Value>Select billing address</Value>
@@ -17093,6 +17231,9 @@
   </LocaleResource>
   <LocaleResource Name="Currency.Selector.Label">
     <Value>Currency selector</Value>
+  </LocaleResource>
+  <LocaleResource Name="Currency.Selector.Text.Pattern">
+    <Value>{0}, {1}</Value>
   </LocaleResource>
   <LocaleResource Name="Customer.FullNameFormat">
     <Value>{0} {1}</Value>
@@ -17459,6 +17600,24 @@
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Messages.QueuedEmailPriority.Low">
     <Value>Low</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Orders.OrderHistoryPeriods.All">
+    <Value>all time</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Orders.OrderHistoryPeriods.Day">
+    <Value>the past day</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Orders.OrderHistoryPeriods.Week">
+    <Value>the past week</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Orders.OrderHistoryPeriods.Month">
+    <Value>the past month</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Orders.OrderHistoryPeriods.HalfYear">
+    <Value>the past six months</Value>
+  </LocaleResource>
+  <LocaleResource Name="Enums.Nop.Core.Domain.Orders.OrderHistoryPeriods.Year">
+    <Value>the past year</Value>
   </LocaleResource>
   <LocaleResource Name="Enums.Nop.Core.Domain.Orders.OrderStatus.Cancelled">
     <Value>Cancelled</Value>
@@ -18594,6 +18753,9 @@
   <LocaleResource Name="PageTitle.Vendors.Apply">
     <Value>Apply for vendor account</Value>
   </LocaleResource>
+  <LocaleResource Name="PageTitle.VendorReviews">
+    <Value>Reviews of the vendor's products</Value>
+  </LocaleResource>
   <LocaleResource Name="PageTitle.ViewPM">
     <Value>View the private message</Value>
   </LocaleResource>
@@ -18691,7 +18853,7 @@
     <Value>Gift card ({0})</Value>
   </LocaleResource>
   <LocaleResource Name="Pdf.Order">
-    <Value>Order</Value>
+    <Value>Order #{0}</Value>
   </LocaleResource>
   <LocaleResource Name="Pdf.OrderDate">
     <Value>Date</Value>
@@ -18734,6 +18896,9 @@
   </LocaleResource>
   <LocaleResource Name="Pdf.RewardPoints">
     <Value>{0} reward points</Value>
+  </LocaleResource>
+  <LocaleResource Name="Pdf.Shipment">
+    <Value>Shipment #{0}</Value>
   </LocaleResource>
   <LocaleResource Name="Pdf.Shipping">
     <Value>Shipping</Value>
@@ -19443,6 +19608,9 @@
   <LocaleResource Name="Search.SearchInDescriptions">
     <Value>Search In product descriptions</Value>
   </LocaleResource>
+  <LocaleResource Name="Search.SearchInTags">
+    <Value>Search in product tags</Value>
+  </LocaleResource>
   <LocaleResource Name="Search.SearchTerm">
     <Value>Search keyword</Value>
   </LocaleResource>
@@ -19767,6 +19935,9 @@
   <LocaleResource Name="Security.Permission.System.ManageSystemLog">
     <Value>Admin area. System Log. Manage</Value>
   </LocaleResource>
+  <LocaleResource Name="SendPmToVendor">
+    <Value>Send private message</Value>
+  </LocaleResource>
   <LocaleResource Name="Shipping.EstimateShipping.City.Required">
     <Value>City is required</Value>
   </LocaleResource>
@@ -19874,6 +20045,9 @@
   </LocaleResource>
   <LocaleResource Name="ShoppingCart.CustomerEnteredPrice.RangeError">
     <Value>The price must be from {0} to {1}</Value>
+  </LocaleResource>
+  <LocaleResource Name="ShoppingCart.DateOfBirthRequired">
+    <Value>This product has age restrictions. Please specify your age in the account details</Value>
   </LocaleResource>
   <LocaleResource Name="ShoppingCart.Discount.CannotBeUsed">
     <Value>You cannot use this discount coupon because the validation conditions are not met</Value>
@@ -19997,6 +20171,9 @@
   </LocaleResource>
   <LocaleResource Name="ShoppingCart.Mini.ViewCart">
     <Value>Go to cart</Value>
+  </LocaleResource>
+  <LocaleResource Name="ShoppingCart.MinimumAgeToPurchase">
+    <Value>This product is available to customers who are {0} years of age or older</Value>
   </LocaleResource>
   <LocaleResource Name="ShoppingCart.MinimumQuantity">
     <Value>The minimum quantity allowed for purchase is {0}.</Value>
@@ -20286,8 +20463,17 @@
   <LocaleResource Name="Vendors.ApplyAccount.Submitted">
     <Value>Your request has been submitted successfully. We'll contact you soon.</Value>
   </LocaleResource>
+  <LocaleResource Name="Vendors.ExistingReviews">
+    <Value>Existing reviews</Value>
+  </LocaleResource>
   <LocaleResource Name="Vendors.List">
     <Value>Vendor List</Value>
+  </LocaleResource>
+  <LocaleResource Name="Vendors.Reviews.All">
+    <Value>View all</Value>
+  </LocaleResource>
+  <LocaleResource Name="Vendors.Reviews.BackTo">
+    <Value>Back to {0}</Value>
   </LocaleResource>
   <LocaleResource Name="Vendors.ViewAll">
     <Value>View all</Value>

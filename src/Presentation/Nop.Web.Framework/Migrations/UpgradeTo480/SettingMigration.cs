@@ -1,5 +1,6 @@
 ﻿using FluentMigrator;
 using Nop.Core.Domain.Catalog;
+using Nop.Core.Domain.Common;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Tax;
 using Nop.Core.Infrastructure;
@@ -59,6 +60,28 @@ public class SettingMigration : MigrationBase
         {
             catalogSettings.ShowSearchBoxCategories = false;
             settingService.SaveSetting(catalogSettings, settings => settings.ShowSearchBoxCategories);
+        }
+
+        //#2388
+        if (!settingService.SettingExists(catalogSettings, settings => settings.ExportImportTierPrices))
+        {
+            catalogSettings.ExportImportTierPrices = true;
+            settingService.SaveSetting(catalogSettings, settings => settings.ExportImportTierPrices);
+        }
+
+        //#7228
+        var adminAreaSettings = settingService.LoadSetting<AdminAreaSettings>();
+        if (!settingService.SettingExists(adminAreaSettings, settings => settings.ProductsBulkEditGridPageSize))
+        {
+            adminAreaSettings.ProductsBulkEditGridPageSize = 100;
+            settingService.SaveSetting(adminAreaSettings, settings => settings.ProductsBulkEditGridPageSize);
+        }
+
+        //#7244
+        if (!settingService.SettingExists(catalogSettings, settings => settings.VendorProductReviewsPageSize))
+        {
+            catalogSettings.VendorProductReviewsPageSize = 6;
+            settingService.SaveSetting(catalogSettings, settings => settings.VendorProductReviewsPageSize);
         }
     }
 

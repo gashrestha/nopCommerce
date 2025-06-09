@@ -1,5 +1,5 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Nop.Core;
 using Nop.Core.Caching;
 using Nop.Plugin.Widgets.Swiper.Domain;
@@ -45,6 +45,9 @@ public class WidgetSwiperViewComponent : NopViewComponent
     /// <returns>A task that represents the asynchronous operation</returns>
     private async Task<string> GetPictureUrlAsync(int pictureId)
     {
+        if (pictureId == 0)
+            return string.Empty;
+
         var cacheKey = _staticCacheManager.PrepareKeyForDefaultCache(ModelCacheEventConsumer.PictureUrlModelKey,
             pictureId, _webHelper.IsCurrentConnectionSecured());
 
@@ -77,7 +80,7 @@ public class WidgetSwiperViewComponent : NopViewComponent
             AutoplayDelay = sliderSettings.AutoplayDelay,
         };
 
-        var slides = JsonSerializer.Deserialize<List<Slide>>(sliderSettings.Slides);
+        var slides = JsonConvert.DeserializeObject<List<Slide>>(sliderSettings.Slides);
         foreach (var slide in slides)
         {
             var picUrl = await GetPictureUrlAsync(slide.PictureId);

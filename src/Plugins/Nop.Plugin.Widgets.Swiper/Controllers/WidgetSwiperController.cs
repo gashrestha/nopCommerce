@@ -1,5 +1,5 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Nop.Core;
 using Nop.Plugin.Widgets.Swiper.Domain;
 using Nop.Plugin.Widgets.Swiper.Models;
@@ -60,7 +60,7 @@ public class WidgetSwiperController : BasePluginController
         if (string.IsNullOrEmpty(slidesSetting))
             return new List<Slide>();
 
-        return JsonSerializer.Deserialize<List<Slide>>(slidesSetting);
+        return JsonConvert.DeserializeObject<List<Slide>>(slidesSetting);
     }
 
     #endregion
@@ -132,8 +132,8 @@ public class WidgetSwiperController : BasePluginController
     [FormValueRequired("add-slide")]
     public virtual async Task<IActionResult> SlideAdd(SlidePictureModel model)
     {
-        if (model.PictureId == 0)
-            RedirectToAction(nameof(Configure));
+        if (!ModelState.IsValid)
+            return await Configure();
 
         //load settings for a chosen store scope
         var storeScope = await _storeContext.GetActiveStoreScopeConfigurationAsync();
@@ -149,7 +149,7 @@ public class WidgetSwiperController : BasePluginController
             LinkUrl = model.LinkUrl
         });
 
-        sliderSettings.Slides = JsonSerializer.Serialize(slides);
+        sliderSettings.Slides = JsonConvert.SerializeObject(slides);
         await _settingService.SaveSettingOverridablePerStoreAsync(sliderSettings, x => x.Slides, true, storeScope);
 
         return RedirectToAction(nameof(Configure));
@@ -167,20 +167,22 @@ public class WidgetSwiperController : BasePluginController
 
         var model = await new SlideListModel().PrepareToGridAsync(slidesSearchModel, slides.ToPagedList(slidesSearchModel), () =>
         {
-            return slides.SelectAwait(async item =>
-            {
-                var picture = (await _pictureService.GetPictureByIdAsync(item.PictureId))
-                    ?? throw new Exception("Picture cannot be loaded");
-
-                return new PublicSlideModel
+            return slides
+                .Where(s => s.PictureId != 0)
+                .SelectAwait(async item =>
                 {
-                    PictureId = item.PictureId,
-                    PictureUrl = (await _pictureService.GetPictureUrlAsync(picture, 200)).Url,
-                    TitleText = item.TitleText,
-                    AltText = item.AltText,
-                    LinkUrl = item.LinkUrl
-                };
-            });
+                    var picture = (await _pictureService.GetPictureByIdAsync(item.PictureId))
+                        ?? throw new Exception("Picture cannot be loaded");
+
+                    return new PublicSlideModel
+                    {
+                        PictureId = item.PictureId,
+                        PictureUrl = (await _pictureService.GetPictureUrlAsync(picture, 200)).Url,
+                        TitleText = item.TitleText,
+                        AltText = item.AltText,
+                        LinkUrl = item.LinkUrl
+                    };
+                });
         });
 
         return Json(model);
@@ -215,7 +217,7 @@ public class WidgetSwiperController : BasePluginController
         }
         else
         {
-            sliderSettings.Slides = JsonSerializer.Serialize(slides);
+            sliderSettings.Slides = JsonConvert.SerializeObject(slides);
             await _settingService.SaveSettingOverridablePerStoreAsync(sliderSettings, x => x.Slides, true, storeScope);
         }
 
@@ -242,7 +244,7 @@ public class WidgetSwiperController : BasePluginController
         slide.LinkUrl = model.LinkUrl;
 
         var sliderSettings = await _settingService.LoadSettingAsync<SwiperSettings>(storeScope);
-        sliderSettings.Slides = JsonSerializer.Serialize(slides);
+        sliderSettings.Slides = JsonConvert.SerializeObject(slides);
         await _settingService.SaveSettingOverridablePerStoreAsync(sliderSettings, x => x.Slides, true, storeScope);
 
         return new NullJsonResult();

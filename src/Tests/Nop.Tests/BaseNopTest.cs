@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
@@ -110,22 +111,26 @@ public partial class BaseNopTest
 
         dataProvider.CreateDatabase(null);
         dataProvider.InitializeDatabase();
-
-        var languagePackInfo = (DownloadUrl: string.Empty, Progress: 0);
-
-        var cultureInfo = new CultureInfo(NopCommonDefaults.DefaultLanguageCulture);
-        var regionInfo = new RegionInfo(NopCommonDefaults.DefaultLanguageCulture);
-
+        
         var installationService = _serviceProvider.GetService<IInstallationService>();
 
-        installationService.InstallRequiredDataAsync(NopTestsDefaults.AdminEmail, NopTestsDefaults.AdminPassword, languagePackInfo, regionInfo, cultureInfo).Wait();
-        installationService.InstallSampleDataAsync(NopTestsDefaults.AdminEmail).Wait();
-
+        installationService.InstallAsync(
+            new InstallationSettings
+            {
+                AdminEmail = NopTestsDefaults.AdminEmail,
+                AdminPassword = NopTestsDefaults.AdminPassword,
+                LanguagePackDownloadLink = string.Empty,
+                LanguagePackProgress = 0,
+                RegionInfo = new RegionInfo(NopCommonDefaults.DefaultLanguageCulture),
+                CultureInfo = new CultureInfo(NopCommonDefaults.DefaultLanguageCulture),
+                InstallSampleData = true
+            }).Wait();
+        
         var permissionService = EngineContext.Current.Resolve<IPermissionService>();
         permissionService.InsertPermissionsAsync().Wait();
     }
 
-    protected static void PropertiesShouldEqual<T1, T2>(T1 obj1, T2 obj2, params string[] filter) 
+    protected static void PropertiesShouldEqual<T1, T2>(T1 obj1, T2 obj2, params string[] filter)
     {
         var object1Properties = typeof(T1).GetProperties();
         var object2Properties = typeof(T2).GetProperties();
@@ -144,7 +149,7 @@ public partial class BaseNopTest
 
             var object1PropertyValue = object1Property.GetValue(obj1);
             var object2PropertyValue = object2Property.GetValue(obj2);
-            
+
             object1PropertyValue.Should().Be(object2PropertyValue, $"The property \"{typeof(T1).Name}.{object1Property.Name}\" of these objects is not equal");
         }
     }
@@ -173,6 +178,9 @@ public partial class BaseNopTest
         webHostEnvironment.Setup(p => p.EnvironmentName).Returns("test");
         webHostEnvironment.Setup(p => p.ApplicationName).Returns("nopCommerce");
         services.AddSingleton(webHostEnvironment.Object);
+
+        var htmlHelper = new Mock<IHtmlHelper>();
+        services.AddSingleton(htmlHelper.Object);
 
         //file provider
         services.AddTransient<INopFileProvider, NopFileProvider>();
@@ -395,6 +403,9 @@ public partial class BaseNopTest
         services.AddTransient<ITaxPluginManager, TaxPluginManager>();
         services.AddScoped<ISearchPluginManager, SearchPluginManager>();
 
+        //picture thumb service
+        services.AddScoped<IThumbService, ThumbService>();
+
         services.AddTransient<IPictureService, TestPictureService>();
         services.AddScoped<IVideoService, VideoService>();
         services.AddScoped<INopUrlHelper, NopUrlHelper>();
@@ -601,7 +612,7 @@ public partial class BaseNopTest
     }
 
     #region Nested classes
-    
+
     protected class NopTestUrlHelper : UrlHelperBase
     {
         public NopTestUrlHelper(ActionContext actionContext) : base(actionContext)
@@ -662,15 +673,15 @@ public partial class BaseNopTest
             IHttpContextAccessor httpContextAccessor, ILogger logger, INopFileProvider fileProvider,
             IProductAttributeParser productAttributeParser, IProductAttributeService productAttributeService,
             IRepository<Picture> pictureRepository, IRepository<PictureBinary> pictureBinaryRepository,
-            IRepository<ProductPicture> productPictureRepository, ISettingService settingService,
+            IRepository<ProductPicture> productPictureRepository, ISettingService settingService, IThumbService thumbService,
             IUrlRecordService urlRecordService, IWebHelper webHelper, MediaSettings mediaSettings) : base(
             downloadService, httpContextAccessor, logger, fileProvider, productAttributeParser, productAttributeService,
-            pictureRepository, pictureBinaryRepository, productPictureRepository, settingService, urlRecordService,
+            pictureRepository, pictureBinaryRepository, productPictureRepository, settingService, thumbService, urlRecordService,
             webHelper, mediaSettings)
         {
         }
 
-        // Travis doesn't support named semaphore, that's why we use implementation without it 
+        // Not all CI/CD support working with named semaphore, that's why we use implementation without it 
         public override async Task<(string Url, Picture Picture)> GetPictureUrlAsync(Picture picture,
             int targetSize = 0,
             bool showDefaultPicture = true,
@@ -687,7 +698,7 @@ public partial class BaseNopTest
             byte[] pictureBinary = null;
             if (picture.IsNew)
             {
-                await DeletePictureThumbsAsync(picture);
+                await _thumbService.DeletePictureThumbsAsync(picture);
                 pictureBinary = await LoadPictureBinaryAsync(picture);
 
                 if ((pictureBinary?.Length ?? 0) == 0)
@@ -718,9 +729,9 @@ public partial class BaseNopTest
                     ? $"{picture.Id:0000000}_{seoFileName}.{lastPart}"
                     : $"{picture.Id:0000000}.{lastPart}";
 
-                var thumbFilePath = await GetThumbLocalPathAsync(thumbFileName);
-                if (await GeneratedThumbExistsAsync(thumbFilePath, thumbFileName))
-                    return (await GetThumbUrlAsync(thumbFileName, storeLocation), picture);
+                var thumbFilePath = await _thumbService.GetThumbLocalPathAsync(thumbFileName);
+                if (await _thumbService.GeneratedThumbExistsAsync(thumbFilePath, thumbFileName))
+                    return (await _thumbService.GetThumbUrlAsync(thumbFileName, storeLocation), picture);
 
                 pictureBinary ??= await LoadPictureBinaryAsync(picture);
 
@@ -732,7 +743,7 @@ public partial class BaseNopTest
                 mutex.WaitOne();
                 try
                 {
-                    SaveThumbAsync(thumbFilePath, thumbFileName, string.Empty, pictureBinary).Wait();
+                    _thumbService.SaveThumbAsync(thumbFilePath, thumbFileName, string.Empty, pictureBinary).Wait();
                 }
                 finally
                 {
@@ -745,9 +756,9 @@ public partial class BaseNopTest
                     ? $"{picture.Id:0000000}_{seoFileName}_{targetSize}.{lastPart}"
                     : $"{picture.Id:0000000}_{targetSize}.{lastPart}";
 
-                var thumbFilePath = await GetThumbLocalPathAsync(thumbFileName);
-                if (await GeneratedThumbExistsAsync(thumbFilePath, thumbFileName))
-                    return (await GetThumbUrlAsync(thumbFileName, storeLocation), picture);
+                var thumbFilePath = await _thumbService.GetThumbLocalPathAsync(thumbFileName);
+                if (await _thumbService.GeneratedThumbExistsAsync(thumbFilePath, thumbFileName))
+                    return (await _thumbService.GetThumbUrlAsync(thumbFileName, storeLocation), picture);
 
                 pictureBinary ??= await LoadPictureBinaryAsync(picture);
 
@@ -772,7 +783,7 @@ public partial class BaseNopTest
                         }
                     }
 
-                    SaveThumbAsync(thumbFilePath, thumbFileName, string.Empty, pictureBinary).Wait();
+                    _thumbService.SaveThumbAsync(thumbFilePath, thumbFileName, string.Empty, pictureBinary).Wait();
                 }
                 finally
                 {
@@ -780,7 +791,7 @@ public partial class BaseNopTest
                 }
             }
 
-            return (await GetThumbUrlAsync(thumbFileName, storeLocation), picture);
+            return (await _thumbService.GetThumbUrlAsync(thumbFileName, storeLocation), picture);
         }
     }
 
@@ -796,7 +807,7 @@ public partial class BaseNopTest
         public MemoryDistributedCacheOptions Value => new();
     }
 
-    private class TestSeesion:ISession
+    private class TestSeesion : ISession
     {
         private static ConcurrentDictionary<string, byte[]> _sessison = new();
 
@@ -817,7 +828,7 @@ public partial class BaseNopTest
 
         public void Set(string key, byte[] value)
         {
-            if(!_sessison.ContainsKey(key))
+            if (!_sessison.ContainsKey(key))
                 _sessison.TryAdd(key, value);
             else
                 _sessison[key] = value;

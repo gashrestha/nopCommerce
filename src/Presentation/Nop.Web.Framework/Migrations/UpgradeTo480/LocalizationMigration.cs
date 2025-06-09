@@ -7,7 +7,7 @@ using Nop.Web.Framework.Extensions;
 
 namespace Nop.Web.Framework.Migrations.UpgradeTo480;
 
-[NopUpdateMigration("2023-11-01 00:00:00", "4.80", UpdateMigrationType.Localization)]
+[NopUpdateMigration("2024-08-01 00:00:01", "4.80", UpdateMigrationType.Localization)]
 public class LocalizationMigration : MigrationBase
 {
     /// <summary>Collect the UP migration expressions</summary>
@@ -104,6 +104,11 @@ public class LocalizationMigration : MigrationBase
             "Permission.OrderCountryReport",
             "Permission.PublicStoreAllowNavigation",
             "Permission.SalesSummaryReport",
+            "Admin.ConfigurationSteps.PaymentPayPal.SignUp.Title",
+            "Admin.ConfigurationSteps.PaymentPayPal.SignUp.Text",
+            "Admin.ConfigurationSteps.PaymentPayPal.Register.Text2",
+            //#7590
+            "Checkout.RedirectMessage"
         });
 
         #endregion
@@ -125,10 +130,10 @@ public class LocalizationMigration : MigrationBase
             ["Admin.ContentManagement.MessageTemplates.List.SearchEmailAccount.All"] = "All",
 
             //#7108
-            ["Admin.ContentManagement.MessageTemplates.Description.OrderCancelled.VendorNotification"] = "This message template is used to notify a vendor that the certain order was cancelled.The order can be cancelled by a customer on the account page or by store owner in Customers - Customers in Orders tab or in Sales - Orders.",
+            ["Admin.ContentManagement.MessageTemplates.Description.OrderCancelled.VendorNotification"] = "This message template is used to notify a vendor that the certain order was cancelled. The order can be cancelled by a customer on the account page or by store owner in Customers - Customers in Orders tab or in Sales - Orders.",
 
             //#7215
-            ["Admin.Catalog.Products.Fields.DisplayAttributeCombinationImagesOnly.Hint"] = "You may choose pictures associated to each product attribute value or attribute combination (these pictures will replace the main product image when this product attribute value or attribute combination is selected). Enable this option if you want to display only images of a chosen product attribute value or a attribute combination (other pictures will be hidden). Otherwise, all uploaded pictures will be displayed on the product details page",
+            ["Admin.Catalog.Products.Fields.DisplayAttributeCombinationImagesOnly.Hint"] = "You may choose pictures associated to each product attribute value or attribute combination (these pictures will replace the main product image when this product attribute value or attribute combination is selected). Enable this option if you want to display only images of a chosen product attribute value or an attribute combination (other pictures will be hidden). Otherwise, all uploaded pictures will be displayed on the product details page",
 
             //#7208
             ["Admin.Customers.Customers.List.SearchIsActive"] = "Is active",
@@ -248,9 +253,10 @@ public class LocalizationMigration : MigrationBase
             ["Security.Permission.System.ManageScheduleTasks"] = "Admin area. Schedule Tasks. Manage",
             ["Security.Permission.System.ManageSystemLog"] = "Admin area. System Log. Manage",
 
-            //#7241
+            //#7242
             ["Admin.Catalog.Categories.Fields.RestrictFromVendors"] = "Restrict from vendors",
             ["Admin.Catalog.Categories.Fields.RestrictFromVendors.Hint"] = "Check to restrict vendors from adding products to this category. This option is useful when you have multi-vendors enabled in your store.",
+
             //#7281
             ["Account.ChangePassword.MustBeChanged"] = "Your password must be changed for security purposes.",
             ["Admin.Customers.Customers.Fields.MustChangePassword"] = "Customer must change password",
@@ -273,13 +279,51 @@ public class LocalizationMigration : MigrationBase
             //#7299
             ["Admin.Catalog.Products.Multimedia.Videos.Description"] = "How to embed a video: Find your video in your library (on any video hosting) and select it to open the video settings page. Select the privacy icon from your \"Share\" button. Click on \"Embed\" from the window that opens up. You can copy the <strong>src</strong> from the embed option and use it.",
 
-            //path base
-            ["Admin.Configuration.AppSettings.Hosting.PathBase"] = "Path base",
-            ["Admin.Configuration.AppSettings.Hosting.PathBase.Hint"] = "Ability to set a custom path base, for example domain.com/path/",
             //4306
             ["Admin.Configuration.Settings.Catalog.ShowSearchBoxCategories"] = "Show product categories for the search box",
             ["Admin.Configuration.Settings.Catalog.ShowSearchBoxCategories.Hint"] = "Check to display the drop-down list with product categories next to the search box.",
             ["Search.SearchBox.AllCategories"] = "All categories",
+
+            //#7241
+            ["Admin.Promotions.Discounts.Fields.Vendor"] = "Vendor",
+            ["Admin.Promotions.Discounts.Fields.Vendor.Hint"] = "Choose a vendor associated with this discount. The associated vendor will have the ability to manage this discount.",
+            ["Admin.Promotions.Discounts.Fields.Vendor.None"] = "No vendor",
+            ["Admin.Promotions.Discounts.List.SearchVendor"] = "Vendor",
+            ["Admin.Promotions.Discounts.List.SearchVendor.Hint"] = "Search by a specific vendor.",
+            //#2388
+            ["Admin.Configuration.Settings.Catalog.ExportImportTierPrices"] = "Export/Import products with tier prices",
+            ["Admin.Configuration.Settings.Catalog.ExportImportTierPrices.Hint"] = "Check if products should be exported/imported with tier prices.",
+
+            //#7228
+            ["Admin.Catalog.Products.BulkEdit"] = "Bulk edit products",
+            ["Admin.Catalog.Products.BulkEdit.SaveSelected"] = "Save selected",
+            ["Admin.Catalog.Products.BulkEdit.SaveAll"] = "Save all",
+
+            //#7243
+            ["Admin.Vendors.PmCustomer.Choose"] = "Choose",
+            ["Admin.Vendors.Fields.PmCustomerId"] = "Customer for PM",
+            ["Admin.Vendors.Fields.PmCustomerId.Hint"] = "Choose the customer for receiving private messages. Customers will see the \"Send private message\" button on the vendor details page.",
+            ["Admin.Vendors.Fields.PmCustomerId.Choose"] = "Choose",
+            ["Admin.Vendors.Fields.PmCustomerId.Remove"] = "Remove",
+            ["SendPmToVendor"] = "Send private message",
+
+            //#7244
+            ["Vendors.ExistingReviews"] = "Existing reviews",
+            ["Vendors.Reviews.All"] = "View all",
+            ["Vendors.Reviews.BackTo"] = "Back to {0}",
+            ["PageTitle.VendorReviews"] = "Reviews of the vendor's products",
+            
+            ["Admin.ConfigurationSteps.PaymentMethods.Configure.Title"] = "Configure a payment method",
+    	    ["Admin.ConfigurationSteps.PaymentMethods.Configure.Text"] = "You can configure each payment method by clicking the appropriate <b>Configure</b> button.",
+
+            ["Admin.ConfigurationSteps.PaymentMethods.PayPalCommerce.Configure.Text"] = "Now we’ll configure the PayPal Commerce payment method.",
+            ["Admin.ConfigurationSteps.PaymentMethods.PayPalCommerce.Configure.Title"] = "Configure PayPal Commerce",
+            ["Admin.ConfigurationSteps.PaymentPayPal.Register.Text"] = "Click this button to register an account. You need to go through a few steps to fill in all the required data. The last step will be to verify your email address to activate your account.",
+            ["Admin.ConfigurationSteps.PaymentPayPal.Credentials.Text"] = "After you create and set up your application in your <b>PayPal</b> account, you need to copy the <b>Client ID</b>, <b>Secret</b> and <b>Merchant ID</b>, and paste them into these fields.",
+
+            //#7618
+            ["Admin.Orders.Address.CustomAttributes"] = "Custom Attributes",
+
         }, languageId);
 
         #endregion
