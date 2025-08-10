@@ -8,6 +8,7 @@ using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
 using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Tax;
+using Nop.Core.Domain.Translation;
 using Nop.Services;
 using Nop.Services.Catalog;
 using Nop.Services.Customers;
@@ -24,6 +25,7 @@ using Nop.Services.Tax;
 using Nop.Services.Topics;
 using Nop.Services.Vendors;
 using Nop.Web.Areas.Admin.Infrastructure.Cache;
+using Nop.Web.Framework.Models.Translation;
 using LogLevel = Nop.Core.Domain.Logging.LogLevel;
 
 namespace Nop.Web.Areas.Admin.Factories;
@@ -52,14 +54,15 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
     protected readonly IPluginService _pluginService;
     protected readonly IProductTemplateService _productTemplateService;
     protected readonly ISpecificationAttributeService _specificationAttributeService;
-    protected readonly IShippingService _shippingService;
     protected readonly IStateProvinceService _stateProvinceService;
     protected readonly IStaticCacheManager _staticCacheManager;
     protected readonly IStoreService _storeService;
     protected readonly ITaxCategoryService _taxCategoryService;
     protected readonly ITopicTemplateService _topicTemplateService;
     protected readonly IVendorService _vendorService;
+    protected readonly IWarehouseService _warehouseService;
     protected readonly IWorkContext _workContext;
+    protected readonly TranslationSettings _translationSettings;
 
     #endregion
 
@@ -82,14 +85,15 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         IPluginService pluginService,
         IProductTemplateService productTemplateService,
         ISpecificationAttributeService specificationAttributeService,
-        IShippingService shippingService,
         IStateProvinceService stateProvinceService,
         IStaticCacheManager staticCacheManager,
         IStoreService storeService,
         ITaxCategoryService taxCategoryService,
         ITopicTemplateService topicTemplateService,
         IVendorService vendorService,
-        IWorkContext workContext)
+        IWarehouseService warehouseService,
+        IWorkContext workContext,
+        TranslationSettings translationSettings)
     {
         _categoryService = categoryService;
         _categoryTemplateService = categoryTemplateService;
@@ -108,14 +112,15 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         _pluginService = pluginService;
         _productTemplateService = productTemplateService;
         _specificationAttributeService = specificationAttributeService;
-        _shippingService = shippingService;
         _stateProvinceService = stateProvinceService;
         _staticCacheManager = staticCacheManager;
         _storeService = storeService;
         _taxCategoryService = taxCategoryService;
         _topicTemplateService = topicTemplateService;
         _vendorService = vendorService;
+        _warehouseService = warehouseService;
         _workContext = workContext;
+        _translationSettings = translationSettings;
     }
 
     #endregion
@@ -904,7 +909,7 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         ArgumentNullException.ThrowIfNull(items);
 
         //prepare available warehouses
-        var availableWarehouses = await _shippingService.GetAllWarehousesAsync();
+        var availableWarehouses = await _warehouseService.GetAllWarehousesAsync();
         foreach (var warehouse in availableWarehouses)
         {
             items.Add(new SelectListItem { Value = warehouse.Id.ToString(), Text = warehouse.Name });
@@ -1004,6 +1009,22 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
 
         //insert special item for the default value
         await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText, defaultItemValue);
+    }
+
+    /// <summary>
+    /// Prepare translation supported model
+    /// </summary>
+    /// <param name="model">Translation supported model</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    public virtual async Task PreparePreTranslationSupportModelAsync(ITranslationSupportedModel model)
+    {
+        if (!_translationSettings.AllowPreTranslate)
+            return;
+
+        var allLanguages = await _languageService.GetAllLanguagesAsync(showHidden: true);
+        model.PreTranslationAvailable = allLanguages.Any(l =>
+            !_translationSettings.NotTranslateLanguages.Contains(l.Id) &&
+            l.Id != _translationSettings.TranslateFromLanguageId);
     }
 
     #endregion

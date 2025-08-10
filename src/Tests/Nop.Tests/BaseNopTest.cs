@@ -38,6 +38,7 @@ using Nop.Data;
 using Nop.Data.Configuration;
 using Nop.Data.Migrations;
 using Nop.Services.Affiliates;
+using Nop.Services.ArtificialIntelligence;
 using Nop.Services.Attributes;
 using Nop.Services.Authentication.External;
 using Nop.Services.Authentication.MultiFactor;
@@ -299,6 +300,7 @@ public partial class BaseNopTest
         services.AddTransient<IProductTagService, ProductTagService>();
         services.AddTransient<IAddressService, AddressService>();
         services.AddTransient<IAffiliateService, AffiliateService>();
+        services.AddTransient<IArtificialIntelligenceService, ArtificialIntelligenceService>();
         services.AddTransient<IVendorService, VendorService>();
 
         //attribute services
@@ -330,6 +332,7 @@ public partial class BaseNopTest
         services.AddTransient<ILocalizationService, LocalizationService>();
         services.AddTransient<ILocalizedEntityService, LocalizedEntityService>();
         services.AddTransient(typeof(Lazy<ILocalizationService>));
+        services.AddTransient<ITranslationModelFactory, TranslationModelFactory>();
         services.AddTransient<IInstallationLocalizationService, InstallationLocalizationService>();
         services.AddTransient<ILanguageService, LanguageService>();
         services.AddTransient<IDownloadService, DownloadService>();
@@ -361,6 +364,8 @@ public partial class BaseNopTest
         services.AddTransient<IUrlRecordService, UrlRecordService>();
         services.AddTransient<IShipmentService, ShipmentService>();
         services.AddTransient<IShippingService, ShippingService>();
+        services.AddTransient<IWarehouseService, WarehouseService>();
+        services.AddTransient<IShippingMethodsService, ShippingMethodsService>();
         services.AddTransient<IDateRangeService, DateRangeService>();
         services.AddTransient<ITaxCategoryService, TaxCategoryService>();
         services.AddTransient<ICheckVatService, CheckVatService>();

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nop.Core;
 using Nop.Core.Configuration;
 using Nop.Core.Domain;
+using Nop.Core.Domain.ArtificialIntelligence;
 using Nop.Core.Domain.Blogs;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Common;
@@ -18,6 +19,7 @@ using Nop.Core.Domain.Security;
 using Nop.Core.Domain.Seo;
 using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Tax;
+using Nop.Core.Domain.Translation;
 using Nop.Core.Domain.Vendors;
 using Nop.Core.Events;
 using Nop.Core.Infrastructure;
@@ -201,7 +203,7 @@ public partial class SettingController : BaseAdminController
                 model.DataConfigModel.ToConfig(_appSettings.Get<DataConfig>()),
                 model.WebOptimizerConfigModel.ToConfig(_appSettings.Get<WebOptimizerConfig>())
             };
-            
+
             await _eventPublisher.PublishAsync(new AppSettingsSavingEvent(configurations));
 
             AppSettingsHelper.SaveAppSettings(configurations, _fileProvider);
@@ -747,6 +749,17 @@ public partial class SettingController : BaseAdminController
             await _settingService.SaveSettingAsync(catalogSettings, x => x.IgnoreStoreLimitations, 0, false);
             await _settingService.SaveSettingAsync(catalogSettings, x => x.CacheProductPrices, 0, false);
 
+            var artificialIntelligenceSettings = await _settingService.LoadSettingAsync<ArtificialIntelligenceSettings>();
+
+            artificialIntelligenceSettings.Enabled = model.ArtificialIntelligenceSettingsModel.Enabled;
+            artificialIntelligenceSettings.ProviderType = (ArtificialIntelligenceProviderType)model.ArtificialIntelligenceSettingsModel.ProviderTypeId;
+            artificialIntelligenceSettings.ChatGptApiKey = model.ArtificialIntelligenceSettingsModel.ChatGptApiKey;
+            artificialIntelligenceSettings.DeepSeekApiKey = model.ArtificialIntelligenceSettingsModel.DeepSeekApiKey;
+            artificialIntelligenceSettings.GeminiApiKey = model.ArtificialIntelligenceSettingsModel.GeminiApiKey;
+            artificialIntelligenceSettings.ProductDescriptionQuery = model.ArtificialIntelligenceSettingsModel.ProductDescriptionQuery;
+
+            await _settingService.SaveSettingAsync(artificialIntelligenceSettings);
+
             //now clear settings cache
             await _settingService.ClearCacheAsync();
 
@@ -971,6 +984,8 @@ public partial class SettingController : BaseAdminController
             await _settingService.SaveSettingOverridablePerStoreAsync(shoppingCartSettings, x => x.DisplayWishlistAfterAddingProduct, model.DisplayWishlistAfterAddingProduct_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(shoppingCartSettings, x => x.MaximumShoppingCartItems, model.MaximumShoppingCartItems_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(shoppingCartSettings, x => x.MaximumWishlistItems, model.MaximumWishlistItems_OverrideForStore, storeScope, false);
+            await _settingService.SaveSettingOverridablePerStoreAsync(shoppingCartSettings, x => x.AllowMultipleWishlist, model.AllowMultipleWishlist_OverrideForStore, storeScope, false);
+            await _settingService.SaveSettingOverridablePerStoreAsync(shoppingCartSettings, x => x.MaximumNumberOfCustomWishlist, model.MaximumNumberOfCustomWishlist_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(shoppingCartSettings, x => x.AllowOutOfStockItemsToBeAddedToWishlist, model.AllowOutOfStockItemsToBeAddedToWishlist_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(shoppingCartSettings, x => x.MoveItemsFromWishlistToCart, model.MoveItemsFromWishlistToCart_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(shoppingCartSettings, x => x.CartsSharedBetweenStores, model.CartsSharedBetweenStores_OverrideForStore, storeScope, false);
@@ -1045,7 +1060,7 @@ public partial class SettingController : BaseAdminController
             await _settingService.SaveSettingOverridablePerStoreAsync(mediaSettings, x => x.DefaultImageQuality, model.DefaultImageQuality_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(mediaSettings, x => x.ImportProductImagesUsingHash, model.ImportProductImagesUsingHash_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(mediaSettings, x => x.DefaultPictureZoomEnabled, model.DefaultPictureZoomEnabled_OverrideForStore, storeScope, false);
-            await _settingService.SaveSettingOverridablePerStoreAsync(mediaSettings, x => x.AllowSVGUploads, model.AllowSVGUploads_OverrideForStore, storeScope, false);
+            await _settingService.SaveSettingOverridablePerStoreAsync(mediaSettings, x => x.AllowSvgUploads, model.AllowSvgUploads_OverrideForStore, storeScope, false);
             await _settingService.SaveSettingOverridablePerStoreAsync(mediaSettings, x => x.ProductDefaultImageId, model.ProductDefaultImageId_OverrideForStore, storeScope, false);
 
             //now clear settings cache
@@ -1575,6 +1590,16 @@ public partial class SettingController : BaseAdminController
             localizationSettings.LoadAllLocalizedPropertiesOnStartup = model.LocalizationSettings.LoadAllLocalizedPropertiesOnStartup;
             localizationSettings.LoadAllUrlRecordsOnStartup = model.LocalizationSettings.LoadAllUrlRecordsOnStartup;
             await _settingService.SaveSettingAsync(localizationSettings);
+
+            //translation settings
+            var translationSettings = await _settingService.LoadSettingAsync<TranslationSettings>(storeScope);
+            translationSettings.AllowPreTranslate = model.TranslationSettings.AllowPreTranslate;
+            translationSettings.TranslateFromLanguageId = model.TranslationSettings.TranslateFromLanguageId;
+            translationSettings.NotTranslateLanguages = model.TranslationSettings.NotTranslateLanguages?.ToList() ?? new List<int>();
+            translationSettings.GoogleApiKey = model.TranslationSettings.GoogleApiKey;
+            translationSettings.DeepLAuthKey = model.TranslationSettings.DeepLAuthKey;
+            translationSettings.TranslationServiceId = model.TranslationSettings.TranslationServiceId;
+            await _settingService.SaveSettingAsync(translationSettings);
 
             //display default menu item
             var displayDefaultMenuItemSettings = await _settingService.LoadSettingAsync<DisplayDefaultMenuItemSettings>(storeScope);

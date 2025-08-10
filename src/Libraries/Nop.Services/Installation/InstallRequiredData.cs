@@ -2,10 +2,12 @@
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using Nop.Core;
 using Nop.Core.Configuration;
 using Nop.Core.Domain;
+using Nop.Core.Domain.ArtificialIntelligence;
 using Nop.Core.Domain.Blogs;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Common;
@@ -28,9 +30,11 @@ using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Stores;
 using Nop.Core.Domain.Tax;
 using Nop.Core.Domain.Topics;
+using Nop.Core.Domain.Translation;
 using Nop.Core.Domain.Vendors;
 using Nop.Core.Http;
 using Nop.Core.Security;
+using Nop.Services.ArtificialIntelligence;
 using Nop.Services.Catalog;
 using Nop.Services.Common;
 using Nop.Services.Customers;
@@ -312,9 +316,13 @@ public partial class InstallationService
     protected virtual async Task InstallLanguagesAsync()
     {
         var defaultCulture = new CultureInfo(NopCommonDefaults.DefaultLanguageCulture);
+        var re = new Regex(" \\(.*\\)", RegexOptions.Compiled);
+        var languageName = re.Replace(defaultCulture.NativeName, string.Empty);
+        languageName = languageName[0].ToString().ToUpper() + languageName[1..];
+
         var defaultLanguage = new Language
         {
-            Name = defaultCulture.TwoLetterISOLanguageName.ToUpperInvariant(),
+            Name = languageName,
             LanguageCulture = defaultCulture.Name,
             UniqueSeoCode = defaultCulture.TwoLetterISOLanguageName,
             FlagImageFileName = $"{defaultCulture.Name.ToLowerInvariant()[^2..]}.png",
@@ -339,9 +347,12 @@ public partial class InstallationService
         if (cultureInfo == null || regionInfo == null || cultureInfo.Name == NopCommonDefaults.DefaultLanguageCulture)
             return;
 
+        languageName = re.Replace(cultureInfo.NativeName, string.Empty);
+        languageName = languageName[0].ToString().ToUpper() + languageName[1..];
+
         var language = new Language
         {
-            Name = cultureInfo.TwoLetterISOLanguageName.ToUpperInvariant(),
+            Name = languageName,
             LanguageCulture = cultureInfo.Name,
             UniqueSeoCode = cultureInfo.TwoLetterISOLanguageName,
             FlagImageFileName = $"{regionInfo.TwoLetterISORegionName.ToLowerInvariant()}.png",
@@ -1463,6 +1474,17 @@ public partial class InstallationService
             UseStandardSearchWhenSearchProviderThrowsException = true
         });
 
+        await SaveSettingAsync(dictionary, new ArtificialIntelligenceSettings
+        {
+            Enabled = false,
+            ChatGptApiKey = string.Empty,
+            DeepSeekApiKey = string.Empty,
+            GeminiApiKey = string.Empty,
+            ProviderType = ArtificialIntelligenceProviderType.Gemini,
+            RequestTimeout = ArtificialIntelligenceDefaults.RequestTimeout,
+            ProductDescriptionQuery = ArtificialIntelligenceDefaults.ProductDescriptionQuery
+        });
+
         await SaveSettingAsync(dictionary, new LocalizationSettings
         {
             DefaultAdminLanguageId = (await Table<Language>().SingleAsync(l => l.LanguageCulture == NopCommonDefaults.DefaultLanguageCulture)).Id,
@@ -1473,6 +1495,16 @@ public partial class InstallationService
             LoadAllLocalizedPropertiesOnStartup = true,
             LoadAllUrlRecordsOnStartup = false,
             IgnoreRtlPropertyForAdminArea = false
+        });
+
+        await SaveSettingAsync(dictionary, new TranslationSettings
+        {
+            TranslateFromLanguageId = (await Table<Language>().FirstAsync()).Id,
+            AllowPreTranslate = false,
+            GoogleApiKey = string.Empty,
+            NotTranslateLanguages = new List<int>(),
+            DeepLAuthKey = string.Empty,
+            TranslationServiceId = (int)TranslationServiceType.GoogleTranslate
         });
 
         await SaveSettingAsync(dictionary, new CustomerSettings
@@ -1591,7 +1623,7 @@ public partial class InstallationService
             ImageSquarePictureSize = 32,
             MaximumImageSize = 1980,
             DefaultPictureZoomEnabled = false,
-            AllowSVGUploads = false,
+            AllowSvgUploads = false,
             DefaultImageQuality = 80,
             MultipleThumbDirectories = false,
             ImportProductImagesUsingHash = true,
@@ -1675,6 +1707,8 @@ public partial class InstallationService
             DisplayWishlistAfterAddingProduct = false,
             MaximumShoppingCartItems = 1000,
             MaximumWishlistItems = 1000,
+            AllowMultipleWishlist = true,
+            MaximumNumberOfCustomWishlist = 10,
             AllowOutOfStockItemsToBeAddedToWishlist = false,
             MoveItemsFromWishlistToCart = true,
             CartsSharedBetweenStores = false,
@@ -1884,7 +1918,8 @@ public partial class InstallationService
             ActiveDiscussionsFeedCount = 25,
             ForumFeedsEnabled = false,
             ForumFeedCount = 10,
-            ForumSearchTermMinimumLength = 3
+            ForumSearchTermMinimumLength = 3,
+            TopicMetaDescriptionLength = 160
         });
 
         await SaveSettingAsync(dictionary, new VendorSettings
@@ -1995,6 +2030,8 @@ public partial class InstallationService
                 "/files/exportimport/",
                 "/install",
                 "/*?*returnUrl=",
+                "/*?*returnurl=", 
+                "/*?*ReturnUrl=",
                 //AJAX urls
                 "/cart/estimateshipping",
                 "/cart/selectshippingoption",

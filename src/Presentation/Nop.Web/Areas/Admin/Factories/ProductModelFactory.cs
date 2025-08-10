@@ -51,6 +51,7 @@ public partial class ProductModelFactory : IProductModelFactory
     protected readonly IDateTimeHelper _dateTimeHelper;
     protected readonly IDiscountService _discountService;
     protected readonly IDiscountSupportedModelFactory _discountSupportedModelFactory;
+    protected readonly ILanguageService _languageService;
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedModelFactory _localizedModelFactory;
     protected readonly IManufacturerService _manufacturerService;
@@ -67,7 +68,6 @@ public partial class ProductModelFactory : IProductModelFactory
     protected readonly ISettingModelFactory _settingModelFactory;
     protected readonly ISettingService _settingService;
     protected readonly IShipmentService _shipmentService;
-    protected readonly IShippingService _shippingService;
     protected readonly IShoppingCartService _shoppingCartService;
     protected readonly ISpecificationAttributeService _specificationAttributeService;
     protected readonly IStoreMappingSupportedModelFactory _storeMappingSupportedModelFactory;
@@ -75,6 +75,7 @@ public partial class ProductModelFactory : IProductModelFactory
     protected readonly IStoreService _storeService;
     protected readonly IUrlRecordService _urlRecordService;
     protected readonly IVideoService _videoService;
+    protected readonly IWarehouseService _warehouseService;
     protected readonly IWorkContext _workContext;
     protected readonly MeasureSettings _measureSettings;
     protected readonly NopHttpClient _nopHttpClient;
@@ -95,6 +96,7 @@ public partial class ProductModelFactory : IProductModelFactory
         IDateTimeHelper dateTimeHelper,
         IDiscountService discountService,
         IDiscountSupportedModelFactory discountSupportedModelFactory,
+        ILanguageService languageService,
         ILocalizationService localizationService,
         ILocalizedModelFactory localizedModelFactory,
         IManufacturerService manufacturerService,
@@ -111,7 +113,6 @@ public partial class ProductModelFactory : IProductModelFactory
         ISettingModelFactory settingModelFactory,
         ISettingService settingService,
         IShipmentService shipmentService,
-        IShippingService shippingService,
         IShoppingCartService shoppingCartService,
         ISpecificationAttributeService specificationAttributeService,
         IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory,
@@ -119,6 +120,7 @@ public partial class ProductModelFactory : IProductModelFactory
         IStoreService storeService,
         IUrlRecordService urlRecordService,
         IVideoService videoService,
+        IWarehouseService warehouseService,
         IWorkContext workContext,
         MeasureSettings measureSettings,
         NopHttpClient nopHttpClient,
@@ -135,6 +137,7 @@ public partial class ProductModelFactory : IProductModelFactory
         _dateTimeHelper = dateTimeHelper;
         _discountService = discountService;
         _discountSupportedModelFactory = discountSupportedModelFactory;
+        _languageService = languageService;
         _localizationService = localizationService;
         _localizedModelFactory = localizedModelFactory;
         _manufacturerService = manufacturerService;
@@ -151,7 +154,6 @@ public partial class ProductModelFactory : IProductModelFactory
         _settingModelFactory = settingModelFactory;
         _settingService = settingService;
         _shipmentService = shipmentService;
-        _shippingService = shippingService;
         _shoppingCartService = shoppingCartService;
         _specificationAttributeService = specificationAttributeService;
         _storeMappingSupportedModelFactory = storeMappingSupportedModelFactory;
@@ -159,6 +161,7 @@ public partial class ProductModelFactory : IProductModelFactory
         _storeService = storeService;
         _urlRecordService = urlRecordService;
         _videoService = videoService;
+        _warehouseService = warehouseService;
         _workContext = workContext;
         _measureSettings = measureSettings;
         _nopHttpClient = nopHttpClient;
@@ -216,7 +219,7 @@ public partial class ProductModelFactory : IProductModelFactory
     {
         ArgumentNullException.ThrowIfNull(models);
 
-        foreach (var warehouse in await _shippingService.GetAllWarehousesAsync())
+        foreach (var warehouse in await _warehouseService.GetAllWarehousesAsync())
         {
             var model = new ProductWarehouseInventoryModel
             {
@@ -980,9 +983,11 @@ public partial class ProductModelFactory : IProductModelFactory
             vendorId: currentVendor?.Id ?? 0);
 
         await _discountSupportedModelFactory.PrepareModelDiscountsAsync(model, product, availableDiscounts, excludeProperties);
-        
+
         //prepare model stores
         await _storeMappingSupportedModelFactory.PrepareModelStoresAsync(model, product, excludeProperties);
+
+        await _baseAdminModelFactory.PreparePreTranslationSupportModelAsync(model);
 
         return model;
     }
@@ -1950,7 +1955,7 @@ public partial class ProductModelFactory : IProductModelFactory
                 }
 
                 stockQuantityHistoryModel.WarehouseName = historyEntry.WarehouseId.HasValue
-                    ? (await _shippingService.GetWarehouseByIdAsync(historyEntry.WarehouseId.Value))?.Name ?? "Deleted"
+                    ? (await _warehouseService.GetWarehouseByIdAsync(historyEntry.WarehouseId.Value))?.Name ?? "Deleted"
                     : await _localizationService.GetResourceAsync("Admin.Catalog.Products.Fields.Warehouse.None");
 
                 return stockQuantityHistoryModel;
@@ -2085,6 +2090,8 @@ public partial class ProductModelFactory : IProductModelFactory
             Text = productAttribute.Name,
             Value = productAttribute.Id.ToString()
         }).ToList();
+
+        await _baseAdminModelFactory.PreparePreTranslationSupportModelAsync(model);
 
         return model;
     }
@@ -2346,7 +2353,7 @@ public partial class ProductModelFactory : IProductModelFactory
 
                 var combinationPicture = (await _productAttributeService.GetProductAttributeCombinationPicturesAsync(combination.Id)).FirstOrDefault();
                 var pictureThumbnailUrl = await _pictureService.GetPictureUrlAsync(combinationPicture?.PictureId ?? 0, 75, false);
-                    
+
                 //little hack here. Grid is rendered wrong way with <img> without "src" attribute
                 if (string.IsNullOrEmpty(pictureThumbnailUrl))
                     pictureThumbnailUrl = await _pictureService.GetDefaultPictureUrlAsync(targetSize: 1);

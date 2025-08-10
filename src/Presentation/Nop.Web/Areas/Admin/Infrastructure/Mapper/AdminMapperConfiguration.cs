@@ -65,6 +65,7 @@ using Nop.Web.Areas.Admin.Models.Templates;
 using Nop.Web.Areas.Admin.Models.Topics;
 using Nop.Web.Areas.Admin.Models.Vendors;
 using Nop.Web.Framework.Models;
+using Nop.Web.Framework.Models.Translation;
 using Nop.Web.Framework.WebOptimizer;
 
 namespace Nop.Web.Areas.Admin.Infrastructure.Mapper;
@@ -157,6 +158,10 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
                 map.ForMember(nameof(IDiscountSupportedModel.AvailableDiscounts), options => options.Ignore());
                 map.ForMember(nameof(IDiscountSupportedModel.SelectedDiscountIds), options => options.Ignore());
             }
+
+            //exclude PreTranslationAvailable from mapping ITranslationSupportedModel
+            if (typeof(ITranslationSupportedModel).IsAssignableFrom(mapConfiguration.DestinationType))
+                map.ForMember(nameof(ITranslationSupportedModel.PreTranslationAvailable), options => options.Ignore());
 
             if (typeof(IPluginModel).IsAssignableFrom(mapConfiguration.DestinationType))
             {
@@ -404,7 +409,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.DisplayAllPicturesOnCatalogPages_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.ProductUrlStructureTypeId_OverrideForStore, mo => mo.Ignore())
             .ForMember(model => model.ProductUrlStructureTypes, mo => mo.Ignore())
-            .ForMember(model => model.ShowSearchBoxCategories_OverrideForStore, mo => mo.Ignore());
+            .ForMember(model => model.ShowSearchBoxCategories_OverrideForStore, mo => mo.Ignore())
+            .ForMember(model => model.ArtificialIntelligenceSettingsModel, mo => mo.Ignore());
         CreateMap<CatalogSettingsModel, CatalogSettings>()
             .ForMember(settings => settings.AjaxProcessAttributeChange, options => options.Ignore())
             .ForMember(settings => settings.CompareProductsNumber, options => options.Ignore())
@@ -1059,7 +1065,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(settings => settings.PostMaxLength, options => options.Ignore())
             .ForMember(settings => settings.PrivateMessagesPageSize, options => options.Ignore())
             .ForMember(settings => settings.StrippedTopicMaxLength, options => options.Ignore())
-            .ForMember(settings => settings.TopicSubjectMaxLength, options => options.Ignore());
+            .ForMember(settings => settings.TopicSubjectMaxLength, options => options.Ignore())
+            .ForMember(settings => settings.TopicMetaDescriptionLength, options => options.Ignore());
     }
 
     /// <summary>
@@ -1152,7 +1159,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.ProductThumbPictureSize_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.VendorThumbPictureSize_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.ProductDefaultImageId_OverrideForStore, options => options.Ignore())
-            .ForMember(model => model.AllowSVGUploads_OverrideForStore, options => options.Ignore());
+            .ForMember(model => model.AllowSvgUploads_OverrideForStore, options => options.Ignore());
         CreateMap<MediaSettingsModel, MediaSettings>()
             .ForMember(settings => settings.AutoCompleteSearchThumbPictureSize, options => options.Ignore())
             .ForMember(settings => settings.UseAbsoluteImagePath, options => options.Ignore())
@@ -1409,6 +1416,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.AllowAnonymousUsersToEmailWishlist_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.AllowCartItemEditing_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.AllowOutOfStockItemsToBeAddedToWishlist_OverrideForStore, options => options.Ignore())
+            .ForMember(model => model.AllowMultipleWishlist_OverrideForStore, options => options.Ignore())
+            .ForMember(model => model.MaximumNumberOfCustomWishlist_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.CartsSharedBetweenStores_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.CrossSellsNumber_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.GroupTierPricesForDistinctShoppingCartItems_OverrideForStore, options => options.Ignore())
@@ -1431,6 +1440,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
 
         CreateMap<ShoppingCartItem, ShoppingCartItemModel>()
             .ForMember(model => model.Store, options => options.Ignore())
+            .ForMember(model => model.CustomWishlistName, options => options.Ignore())
             .ForMember(model => model.AttributeInfo, options => options.Ignore())
             .ForMember(model => model.UnitPrice, options => options.Ignore())
             .ForMember(model => model.UnitPriceValue, options => options.Ignore())
