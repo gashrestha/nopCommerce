@@ -5,6 +5,7 @@
 @model Nop.Plugin.Misc.RFQ.Models.Customer.RequestQuoteModel
 @inject MediaSettings mediaSettings
 @inject Nop.Services.Html.IHtmlFormatter htmlFormatter
+@inject INopUrlHelper nopUrlHelper
 
 @{
 
@@ -36,10 +37,10 @@
     <form asp-controller="RfqCustomer" asp-action="CustomerRequest" method="post">
         <input asp-for="Id" type="hidden" />
         <div class="page-body">
-            <div class="fieldset">
-                <div class="title">
-                    <strong>@T("Plugins.Misc.RFQ.CustomerRequest.Info")</strong>
-                </div>
+            <section class="fieldset">
+                <h2 class="title">
+                    @T("Plugins.Misc.RFQ.CustomerRequest.Info")
+                </h2>
                 <div class="form-fields">
                     @if (Model.Id != 0)
                     {
@@ -78,12 +79,12 @@
                         }
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="fieldset">
-                <div class="title">
-                    <strong>@T("Plugins.Misc.RFQ.Products")</strong>
-                </div>
+            <section class="fieldset">
+                <h2 class="title">
+                    @T("Plugins.Misc.RFQ.Products")
+                </h2>
                 <div>
                     <table class="data-table">
                         <thead>
@@ -101,7 +102,7 @@
                                 <tr>
                                     <td class="picture"><img src="@item.PictureUrl" /></td>
                                     <td class="product">
-                                        <a href="@(Url.RouteUrl<Product>(new { SeName = item.ProductSeName }))">
+                                        <a href="@(await nopUrlHelper.RouteGenericUrlAsync<Product>(new { SeName = item.ProductSeName }))">
                                             @item.ProductName
                                         </a>
                                         <br />
@@ -135,7 +136,7 @@
                     <br />
                     @await Html.PartialAsync("_CustomerRequest.buttons.cshtml", Model)
                 </div>
-            </div>
+            </section>
         </div>
     </form>
 </div>

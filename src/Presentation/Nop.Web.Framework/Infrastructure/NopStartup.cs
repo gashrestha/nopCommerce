@@ -25,6 +25,7 @@ using Nop.Services.Directory;
 using Nop.Services.Discounts;
 using Nop.Services.Events;
 using Nop.Services.ExportImport;
+using Nop.Services.FilterLevels;
 using Nop.Services.Forums;
 using Nop.Services.Gdpr;
 using Nop.Services.Helpers;
@@ -34,6 +35,7 @@ using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Media;
 using Nop.Services.Media.RoxyFileman;
+using Nop.Services.Menus;
 using Nop.Services.Messages;
 using Nop.Services.News;
 using Nop.Services.Orders;
@@ -138,6 +140,7 @@ public partial class NopStartup : INopStartup
         //services
         services.AddScoped<IBackInStockSubscriptionService, BackInStockSubscriptionService>();
         services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<IFilterLevelValueService, FilterLevelValueService>();
         services.AddScoped<ICompareProductsService, CompareProductsService>();
         services.AddScoped<IRecentlyViewedProductsService, RecentlyViewedProductsService>();
         services.AddScoped<IManufacturerService, ManufacturerService>();
@@ -146,6 +149,7 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IProductAttributeParser, ProductAttributeParser>();
         services.AddScoped<IProductAttributeService, ProductAttributeService>();
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<IProductReviewService, ProductReviewService>();
         services.AddScoped<ICopyProductService, CopyProductService>();
         services.AddScoped<ISpecificationAttributeService, SpecificationAttributeService>();
         services.AddScoped<IProductTemplateService, ProductTemplateService>();
@@ -240,6 +244,7 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IVideoService, VideoService>();
         services.AddScoped<INopUrlHelper, NopUrlHelper>();
         services.AddScoped<IWidgetModelFactory, WidgetModelFactory>();
+        services.AddScoped<IMenuService, MenuService>();
 
         //attribute services
         services.AddScoped(typeof(IAttributeService<,>), typeof(AttributeService<,>));
@@ -325,7 +330,7 @@ public partial class NopStartup : INopStartup
     /// Configure the using of added middleware
     /// </summary>
     /// <param name="application">Builder for configuring an application's request pipeline</param>
-    public void Configure(IApplicationBuilder application)
+    public virtual void Configure(IApplicationBuilder application)
     {
     }
 

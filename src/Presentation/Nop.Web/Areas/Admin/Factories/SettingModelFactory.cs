@@ -8,6 +8,7 @@ using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Common;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Directory;
+using Nop.Core.Domain.FilterLevels;
 using Nop.Core.Domain.Forums;
 using Nop.Core.Domain.Gdpr;
 using Nop.Core.Domain.Localization;
@@ -51,6 +52,7 @@ public partial class SettingModelFactory : ISettingModelFactory
 
     protected readonly AppSettings _appSettings;
     protected readonly CurrencySettings _currencySettings;
+    protected readonly FilterLevelSettings _filterLevelSettings;
     protected readonly IAddressModelFactory _addressModelFactory;
     protected readonly IAddressAttributeModelFactory _addressAttributeModelFactory;
     protected readonly IAddressService _addressService;
@@ -81,6 +83,7 @@ public partial class SettingModelFactory : ISettingModelFactory
 
     public SettingModelFactory(AppSettings appSettings,
         CurrencySettings currencySettings,
+        FilterLevelSettings filterLevelSettings,
         IAddressModelFactory addressModelFactory,
         IAddressAttributeModelFactory addressAttributeModelFactory,
         IAddressService addressService,
@@ -107,6 +110,7 @@ public partial class SettingModelFactory : ISettingModelFactory
     {
         _appSettings = appSettings;
         _currencySettings = currencySettings;
+        _filterLevelSettings = filterLevelSettings;
         _addressModelFactory = addressModelFactory;
         _addressAttributeModelFactory = addressAttributeModelFactory;
         _addressService = addressService;
@@ -184,6 +188,24 @@ public partial class SettingModelFactory : ISettingModelFactory
     }
 
     /// <summary>
+    /// Prepare filter level search model
+    /// </summary>
+    /// <param name="searchModel">Filter level search model</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the filter level search model
+    /// </returns>
+    protected virtual Task<FilterLevelSearchModel> PrepareFilterLevelSearchModelAsync(FilterLevelSearchModel searchModel)
+    {
+        ArgumentNullException.ThrowIfNull(searchModel);
+
+        //prepare page parameters
+        searchModel.SetGridPageSize();
+
+        return Task.FromResult(searchModel);
+    }
+
+    /// <summary>
     /// Prepare artificial intelligence settings model
     /// </summary>
     /// <param name="model">Artificial intelligence search model</param>
@@ -202,7 +224,14 @@ public partial class SettingModelFactory : ISettingModelFactory
         model.DeepSeekApiKey = artificialIntelligenceSettings.DeepSeekApiKey;
         model.GeminiApiKey = artificialIntelligenceSettings.GeminiApiKey;
         model.ProviderTypeId = (int)artificialIntelligenceSettings.ProviderType;
+        model.AllowProductDescriptionGeneration = artificialIntelligenceSettings.AllowProductDescriptionGeneration;
         model.ProductDescriptionQuery = artificialIntelligenceSettings.ProductDescriptionQuery;
+        model.AllowMetaTitleGeneration = artificialIntelligenceSettings.AllowMetaTitleGeneration;
+        model.MetaTitleQuery = artificialIntelligenceSettings.MetaTitleQuery;
+        model.AllowMetaKeywordsGeneration = artificialIntelligenceSettings.AllowMetaKeywordsGeneration;
+        model.MetaKeywordsQuery = artificialIntelligenceSettings.MetaKeywordsQuery;
+        model.AllowMetaDescriptionGeneration = artificialIntelligenceSettings.AllowMetaDescriptionGeneration;
+        model.MetaDescriptionQuery = artificialIntelligenceSettings.MetaDescriptionQuery;
 
         //prepare available translation services
         var availableProviderType = await ArtificialIntelligenceProviderType.Gemini.ToSelectListAsync(false);
@@ -674,7 +703,7 @@ public partial class SettingModelFactory : ISettingModelFactory
         //prepare available translation services
         var availableTranslationServices = await TranslationServiceType.GoogleTranslate.ToSelectListAsync(false);
         model.AvailableTranslationService = availableTranslationServices.ToList();
-        
+
         //prepare available languages
         await _baseAdminModelFactory.PrepareLanguagesAsync(model.AvailableLanguages, false);
 
@@ -706,102 +735,6 @@ public partial class SettingModelFactory : ISettingModelFactory
         {
             model.UseRichEditorInMessageTemplates_OverrideForStore = await _settingService.SettingExistsAsync(adminAreaSettings, x => x.UseRichEditorInMessageTemplates, storeId);
         }
-
-        return model;
-    }
-
-    /// <summary>
-    /// Prepare display default menu item settings model
-    /// </summary>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the display default menu item settings model
-    /// </returns>
-    protected virtual async Task<DisplayDefaultMenuItemSettingsModel> PrepareDisplayDefaultMenuItemSettingsModelAsync()
-    {
-        //load settings for a chosen store scope
-        var storeId = await _storeContext.GetActiveStoreScopeConfigurationAsync();
-        var displayDefaultMenuItemSettings = await _settingService.LoadSettingAsync<DisplayDefaultMenuItemSettings>(storeId);
-
-        //fill in model values from the entity
-        var model = new DisplayDefaultMenuItemSettingsModel
-        {
-            DisplayHomepageMenuItem = displayDefaultMenuItemSettings.DisplayHomepageMenuItem,
-            DisplayNewProductsMenuItem = displayDefaultMenuItemSettings.DisplayNewProductsMenuItem,
-            DisplayProductSearchMenuItem = displayDefaultMenuItemSettings.DisplayProductSearchMenuItem,
-            DisplayCustomerInfoMenuItem = displayDefaultMenuItemSettings.DisplayCustomerInfoMenuItem,
-            DisplayBlogMenuItem = displayDefaultMenuItemSettings.DisplayBlogMenuItem,
-            DisplayForumsMenuItem = displayDefaultMenuItemSettings.DisplayForumsMenuItem,
-            DisplayContactUsMenuItem = displayDefaultMenuItemSettings.DisplayContactUsMenuItem
-        };
-
-        if (storeId <= 0)
-            return model;
-
-        //fill in overridden values
-        model.DisplayHomepageMenuItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultMenuItemSettings, x => x.DisplayHomepageMenuItem, storeId);
-        model.DisplayNewProductsMenuItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultMenuItemSettings, x => x.DisplayNewProductsMenuItem, storeId);
-        model.DisplayProductSearchMenuItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultMenuItemSettings, x => x.DisplayProductSearchMenuItem, storeId);
-        model.DisplayCustomerInfoMenuItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultMenuItemSettings, x => x.DisplayCustomerInfoMenuItem, storeId);
-        model.DisplayBlogMenuItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultMenuItemSettings, x => x.DisplayBlogMenuItem, storeId);
-        model.DisplayForumsMenuItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultMenuItemSettings, x => x.DisplayForumsMenuItem, storeId);
-        model.DisplayContactUsMenuItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultMenuItemSettings, x => x.DisplayContactUsMenuItem, storeId);
-
-        return model;
-    }
-
-    /// <summary>
-    /// Prepare display default footer item settings model
-    /// </summary>
-    /// <returns>
-    /// A task that represents the asynchronous operation
-    /// The task result contains the display default footer item settings model
-    /// </returns>
-    protected virtual async Task<DisplayDefaultFooterItemSettingsModel> PrepareDisplayDefaultFooterItemSettingsModelAsync()
-    {
-        //load settings for a chosen store scope
-        var storeId = await _storeContext.GetActiveStoreScopeConfigurationAsync();
-        var displayDefaultFooterItemSettings = await _settingService.LoadSettingAsync<DisplayDefaultFooterItemSettings>(storeId);
-
-        //fill in model values from the entity
-        var model = new DisplayDefaultFooterItemSettingsModel
-        {
-            DisplaySitemapFooterItem = displayDefaultFooterItemSettings.DisplaySitemapFooterItem,
-            DisplayContactUsFooterItem = displayDefaultFooterItemSettings.DisplayContactUsFooterItem,
-            DisplayProductSearchFooterItem = displayDefaultFooterItemSettings.DisplayProductSearchFooterItem,
-            DisplayNewsFooterItem = displayDefaultFooterItemSettings.DisplayNewsFooterItem,
-            DisplayBlogFooterItem = displayDefaultFooterItemSettings.DisplayBlogFooterItem,
-            DisplayForumsFooterItem = displayDefaultFooterItemSettings.DisplayForumsFooterItem,
-            DisplayRecentlyViewedProductsFooterItem = displayDefaultFooterItemSettings.DisplayRecentlyViewedProductsFooterItem,
-            DisplayCompareProductsFooterItem = displayDefaultFooterItemSettings.DisplayCompareProductsFooterItem,
-            DisplayNewProductsFooterItem = displayDefaultFooterItemSettings.DisplayNewProductsFooterItem,
-            DisplayCustomerInfoFooterItem = displayDefaultFooterItemSettings.DisplayCustomerInfoFooterItem,
-            DisplayCustomerOrdersFooterItem = displayDefaultFooterItemSettings.DisplayCustomerOrdersFooterItem,
-            DisplayCustomerAddressesFooterItem = displayDefaultFooterItemSettings.DisplayCustomerAddressesFooterItem,
-            DisplayShoppingCartFooterItem = displayDefaultFooterItemSettings.DisplayShoppingCartFooterItem,
-            DisplayWishlistFooterItem = displayDefaultFooterItemSettings.DisplayWishlistFooterItem,
-            DisplayApplyVendorAccountFooterItem = displayDefaultFooterItemSettings.DisplayApplyVendorAccountFooterItem
-        };
-
-        if (storeId <= 0)
-            return model;
-
-        //fill in overridden values
-        model.DisplaySitemapFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplaySitemapFooterItem, storeId);
-        model.DisplayContactUsFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplayContactUsFooterItem, storeId);
-        model.DisplayProductSearchFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplayProductSearchFooterItem, storeId);
-        model.DisplayNewsFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplayNewsFooterItem, storeId);
-        model.DisplayBlogFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplayBlogFooterItem, storeId);
-        model.DisplayForumsFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplayForumsFooterItem, storeId);
-        model.DisplayRecentlyViewedProductsFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplayRecentlyViewedProductsFooterItem, storeId);
-        model.DisplayCompareProductsFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplayCompareProductsFooterItem, storeId);
-        model.DisplayNewProductsFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplayNewProductsFooterItem, storeId);
-        model.DisplayCustomerInfoFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplayCustomerInfoFooterItem, storeId);
-        model.DisplayCustomerOrdersFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplayCustomerOrdersFooterItem, storeId);
-        model.DisplayCustomerAddressesFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplayCustomerAddressesFooterItem, storeId);
-        model.DisplayShoppingCartFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplayShoppingCartFooterItem, storeId);
-        model.DisplayWishlistFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplayWishlistFooterItem, storeId);
-        model.DisplayApplyVendorAccountFooterItem_OverrideForStore = await _settingService.SettingExistsAsync(displayDefaultFooterItemSettings, x => x.DisplayApplyVendorAccountFooterItem, storeId);
 
         return model;
     }
@@ -1378,6 +1311,94 @@ public partial class SettingModelFactory : ISettingModelFactory
     }
 
     /// <summary>
+    /// Prepare filter level settings model
+    /// </summary>
+    /// <param name="model">Filter level settings model</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the filter level settings model
+    /// </returns>
+    public virtual async Task<FilterLevelSettingsModel> PrepareFilterLevelSettingsModelAsync(FilterLevelSettingsModel model = null)
+    {
+        //load settings
+
+        //fill in model values from the entity
+        model ??= _filterLevelSettings.ToSettingsModel<FilterLevelSettingsModel>();
+
+        //prepare nested search model
+        await PrepareFilterLevelSearchModelAsync(model.FilterLevelSearchModel);
+        return model;
+    }
+
+    /// <summary>
+    /// Prepare paged filter level list model
+    /// </summary>
+    /// <param name="searchModel">Filter level search model</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the filter level list model
+    /// </returns>
+    public virtual async Task<FilterLevelListModel> PrepareFilterLevelListModelAsync(FilterLevelSearchModel searchModel)
+    {
+        ArgumentNullException.ThrowIfNull(searchModel);
+
+        //get filter levels
+        var filterLevels = Enum.GetValues(typeof(FilterLevelEnum)).OfType<FilterLevelEnum>().ToList().ToPagedList(searchModel);
+
+        //prepare list model
+        var model = await new FilterLevelListModel().PrepareToGridAsync(searchModel, filterLevels, () =>
+        {
+            return filterLevels.SelectAwait(async filterLevel =>
+            {
+                //fill in model values from the entity
+                var filterLevelModel = new FilterLevelModel { Id = (int)filterLevel };
+
+                //fill in additional values (not existing in the entity)
+                filterLevelModel.Name = await _localizationService.GetLocalizedEnumAsync(filterLevel);
+                filterLevelModel.Enabled = !_filterLevelSettings.FilterLevelEnumDisabled.Contains((int)filterLevel);
+
+                return filterLevelModel;
+            }).OrderBy(filterLevel => filterLevel.Id);
+        });
+
+        return model;
+    }
+
+    /// <summary>
+    /// Prepare filter level model
+    /// </summary>
+    /// <param name="model">Filter level model</param>
+    /// <param name="filterLevel">Filter level</param>
+    /// <param name="excludeProperties">Whether to exclude populating of some properties of model</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the filter level model
+    /// </returns>
+    public virtual async Task<FilterLevelModel> PrepareFilterLevelModelAsync(FilterLevelModel model, FilterLevelEnum filterLevel, bool excludeProperties = false)
+    {
+        Func<FilterLevelLocalizedModel, int, Task> localizedModelConfiguration = null;
+
+        //fill in model values from settings
+        model ??= new FilterLevelModel { Id = (int)filterLevel };
+        model.Name = await _localizationService.GetLocalizedEnumAsync(filterLevel);
+        model.Enabled = !_filterLevelSettings.FilterLevelEnumDisabled.Contains((int)filterLevel);
+
+        //define localized model configuration action
+        localizedModelConfiguration = async (locale, languageId) =>
+        {
+            var resourceName = $"Enums.Nop.Core.Domain.FilterLevels.FilterLevelEnum.{filterLevel}";
+            var resource = await _localizationService.GetLocaleStringResourceByNameAsync(resourceName, languageId, false);
+            locale.Name = resource?.ResourceValue ?? string.Empty;
+        };
+
+        //prepare localized models
+        if (!excludeProperties)
+            model.Locales = await _localizedModelFactory.PrepareLocalizedModelsAsync(localizedModelConfiguration);
+
+        return model;
+    }
+
+    /// <summary>
     /// Prepare paged sort option list model
     /// </summary>
     /// <param name="searchModel">Sort option search model</param>
@@ -1509,6 +1530,7 @@ public partial class SettingModelFactory : ISettingModelFactory
             model.CustomOrderNumberMask_OverrideForStore = await _settingService.SettingExistsAsync(orderSettings, x => x.CustomOrderNumberMask, storeId);
             model.ExportWithProducts_OverrideForStore = await _settingService.SettingExistsAsync(orderSettings, x => x.ExportWithProducts, storeId);
             model.AllowAdminsToBuyCallForPriceProducts_OverrideForStore = await _settingService.SettingExistsAsync(orderSettings, x => x.AllowAdminsToBuyCallForPriceProducts, storeId);
+            model.AllowCustomersCancelOrders_OverrideForStore = await _settingService.SettingExistsAsync(orderSettings, x => x.AllowCustomersCancelOrders, storeId);
             model.ShowProductThumbnailInOrderDetailsPage_OverrideForStore = await _settingService.SettingExistsAsync(orderSettings, x => x.ShowProductThumbnailInOrderDetailsPage, storeId);
             model.DeleteGiftCardUsageHistory_OverrideForStore = await _settingService.SettingExistsAsync(orderSettings, x => x.DeleteGiftCardUsageHistory, storeId);
         }
@@ -1813,12 +1835,6 @@ public partial class SettingModelFactory : ISettingModelFactory
 
         //prepare admin area settings model
         model.AdminAreaSettings = await PrepareAdminAreaSettingsModelAsync();
-
-        //prepare display default menu item settings model
-        model.DisplayDefaultMenuItemSettings = await PrepareDisplayDefaultMenuItemSettingsModelAsync();
-
-        //prepare display default footer item settings model
-        model.DisplayDefaultFooterItemSettings = await PrepareDisplayDefaultFooterItemSettingsModelAsync();
 
         //prepare custom HTML settings model
         model.CustomHtmlSettings = await PrepareCustomHtmlSettingsModelAsync();

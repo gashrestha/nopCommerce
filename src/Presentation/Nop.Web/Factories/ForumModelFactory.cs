@@ -6,6 +6,7 @@ using Nop.Core.Domain.Forums;
 using Nop.Core.Domain.Media;
 using Nop.Core.Domain.Security;
 using Nop.Core.Domain.Seo;
+using Nop.Core.Http;
 using Nop.Services.Common;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
@@ -994,7 +995,7 @@ public partial class ForumModelFactory : IForumModelFactory
             TotalRecords = list.TotalCount,
             PageIndex = list.PageIndex,
             ShowTotalSummary = false,
-            RouteActionName = "CustomerForumSubscriptions",
+            RouteActionName = NopRouteNames.Standard.CUSTOMER_FORUM_SUBSCRIPTIONS,
             UseRouteLinks = true,
             RouteValues = new ForumSubscriptionsRouteValues { PageNumber = pageIndex }
         };
@@ -1070,9 +1071,7 @@ public partial class ForumModelFactory : IForumModelFactory
     /// <summary>
     /// record that has only page for route value. Used for (My Account) Forum Subscriptions pagination
     /// </summary>
-    public partial record ForumSubscriptionsRouteValues : BaseRouteValues
-    {
-    }
+    public partial record ForumSubscriptionsRouteValues : BaseRouteValues;
 
     /// <summary>
     /// record that has search options for route values. Used for Search result pagination
@@ -1089,9 +1088,7 @@ public partial class ForumModelFactory : IForumModelFactory
     /// <summary>
     /// record that has only page for route value. Used for Active Discussions (forums) pagination
     /// </summary>
-    public partial record ForumActiveDiscussionsRouteValues : BaseRouteValues
-    {
-    }
+    public partial record ForumActiveDiscussionsRouteValues : BaseRouteValues;
 
     #endregion
 }

@@ -29,15 +29,13 @@ public partial class CategoryService : ICategoryService
     protected readonly IStaticCacheManager _staticCacheManager;
     protected readonly IStoreContext _storeContext;
     protected readonly IStoreMappingService _storeMappingService;
-    protected readonly IStoreService _storeService;
     protected readonly IWorkContext _workContext;
 
     #endregion
 
     #region Ctor
 
-    public CategoryService(
-        IAclService aclService,
+    public CategoryService(IAclService aclService,
         ICustomerService customerService,
         ILocalizationService localizationService,
         IRepository<Category> categoryRepository,
@@ -47,7 +45,6 @@ public partial class CategoryService : ICategoryService
         IStaticCacheManager staticCacheManager,
         IStoreContext storeContext,
         IStoreMappingService storeMappingService,
-        IStoreService storeService,
         IWorkContext workContext)
     {
         _aclService = aclService;
@@ -60,7 +57,6 @@ public partial class CategoryService : ICategoryService
         _staticCacheManager = staticCacheManager;
         _storeContext = storeContext;
         _storeMappingService = storeMappingService;
-        _storeService = storeService;
         _workContext = workContext;
     }
 
@@ -470,7 +466,9 @@ public partial class CategoryService : ICategoryService
     /// </returns>
     public virtual async Task<Category> GetCategoryByIdAsync(int categoryId)
     {
-        return await _categoryRepository.GetByIdAsync(categoryId, cache => default);
+        var category = await _categoryRepository.GetByIdAsync(categoryId, cache => default);
+
+        return category;
     }
 
     /// <summary>
@@ -810,62 +808,37 @@ public partial class CategoryService : ICategoryService
 
         return await _staticCacheManager.GetAsync(breadcrumbCacheKey, async () =>
         {
+            //use a local variable, so we don't mutate the parameter captured by the closure
+            var currentCategory = category;
+
+            //index all categories once (provided list or fetched), keep first per id
+            var allCategoriesById = (allCategories ?? await GetAllCategoriesAsync(showHidden: showHidden))
+                .DistinctBy(c => c.Id)
+                .ToDictionary(c => c.Id);
+
             var result = new List<Category>();
 
-            //used to prevent circular references
-            var alreadyProcessedCategoryIds = new List<int>();
+            //used to prevent circular references (HashSet → O(1) lookups)
+            var alreadyProcessedCategoryIds = new HashSet<int>();
 
-            while (category != null && //not null
-                   !category.Deleted && //not deleted
-                   (showHidden || category.Published) && //published
-                   (showHidden || await _aclService.AuthorizeAsync(category)) && //ACL
-                   (showHidden || await _storeMappingService.AuthorizeAsync(category)) && //Store mapping
-                   !alreadyProcessedCategoryIds.Contains(category.Id)) //prevent circular references
+            while (currentCategory != null && //not null
+                   !currentCategory.Deleted && //not deleted
+                   (showHidden || currentCategory.Published) && //published
+                   !alreadyProcessedCategoryIds.Contains(currentCategory.Id) && //prevent circular references
+                   (showHidden || await _aclService.AuthorizeAsync(currentCategory)) && //ACL
+                   (showHidden || await _storeMappingService.AuthorizeAsync(currentCategory))) //store mapping
             {
-                result.Add(category);
+                result.Add(currentCategory);
+                alreadyProcessedCategoryIds.Add(currentCategory.Id);
 
-                alreadyProcessedCategoryIds.Add(category.Id);
-
-                category = allCategories != null
-                    ? allCategories.FirstOrDefault(c => c.Id == category.ParentCategoryId)
-                    : await GetCategoryByIdAsync(category.ParentCategoryId);
+                //move to parent using the pre-indexed map
+                allCategoriesById.TryGetValue(currentCategory.ParentCategoryId, out currentCategory);
             }
 
             result.Reverse();
 
             return result;
         });
-    }
-
-    /// <summary>
-    /// Update category store mappings
-    /// </summary>
-    /// <param name="category">Category</param>
-    /// <param name="limitedToStoresIds">A list of store ids for mapping</param>
-    /// <returns>A task that represents the asynchronous operation</returns>
-    public async Task UpdateCategoryStoreMappingsAsync(Category category, IList<int> limitedToStoresIds)
-    {
-        category.LimitedToStores = limitedToStoresIds.Any();
-        await UpdateCategoryAsync(category);
-
-        var existingStoreMappings = await _storeMappingService.GetStoreMappingsAsync(category);
-        var allStores = await _storeService.GetAllStoresAsync();
-        foreach (var store in allStores)
-        {
-            if (limitedToStoresIds.Contains(store.Id))
-            {
-                //new store
-                if (existingStoreMappings.All(sm => sm.StoreId != store.Id))
-                    await _storeMappingService.InsertStoreMappingAsync(category, store.Id);
-            }
-            else
-            {
-                //remove store
-                var storeMappingToDelete = existingStoreMappings.FirstOrDefault(sm => sm.StoreId == store.Id);
-                if (storeMappingToDelete != null)
-                    await _storeMappingService.DeleteStoreMappingAsync(storeMappingToDelete);
-            }
-        }
     }
 
     #endregion

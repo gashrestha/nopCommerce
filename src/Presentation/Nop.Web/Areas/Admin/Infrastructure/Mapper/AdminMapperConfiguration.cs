@@ -9,11 +9,13 @@ using Nop.Core.Domain.Configuration;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Discounts;
+using Nop.Core.Domain.FilterLevels;
 using Nop.Core.Domain.Forums;
 using Nop.Core.Domain.Gdpr;
 using Nop.Core.Domain.Localization;
 using Nop.Core.Domain.Logging;
 using Nop.Core.Domain.Media;
+using Nop.Core.Domain.Menus;
 using Nop.Core.Domain.Messages;
 using Nop.Core.Domain.News;
 using Nop.Core.Domain.Orders;
@@ -48,6 +50,7 @@ using Nop.Web.Areas.Admin.Models.ExternalAuthentication;
 using Nop.Web.Areas.Admin.Models.Forums;
 using Nop.Web.Areas.Admin.Models.Localization;
 using Nop.Web.Areas.Admin.Models.Logging;
+using Nop.Web.Areas.Admin.Models.Menus;
 using Nop.Web.Areas.Admin.Models.Messages;
 using Nop.Web.Areas.Admin.Models.MultiFactorAuthentication;
 using Nop.Web.Areas.Admin.Models.News;
@@ -92,6 +95,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateDirectoryMaps();
         CreateDiscountsMaps();
         CreateForumsMaps();
+        CreateFilterLevelMaps();
         CreateGdprMaps();
         CreateLocalizationMaps();
         CreateLoggingMaps();
@@ -111,6 +115,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateTopicsMaps();
         CreateVendorsMaps();
         CreateWarehouseMaps();
+        CreateMenuMaps();
 
         //add some generic mapping rules
         this.Internal().ForAllMaps((mapConfiguration, map) =>
@@ -211,7 +216,9 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
 
         CreateMap<DataConfig, DataConfigModel>()
             .ForMember(model => model.DataProviderTypeValues, options => options.Ignore());
-        CreateMap<DataConfigModel, DataConfig>();
+        CreateMap<DataConfigModel, DataConfig>()
+            .ForMember(entity => entity.Collation, options => options.Ignore())
+            .ForMember(entity => entity.CharacterSet, options => options.Ignore());
 
         CreateMap<WebOptimizerConfig, WebOptimizerConfigModel>();
         CreateMap<WebOptimizerConfigModel, WebOptimizerConfig>()
@@ -220,7 +227,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(entity => entity.HttpsCompression, options => options.Ignore())
             .ForMember(entity => entity.EnableTagHelperBundling, options => options.Ignore())
             .ForMember(entity => entity.EnableCaching, options => options.Ignore())
-            .ForMember(entity => entity.EnableMemoryCache, options => options.Ignore());
+            .ForMember(entity => entity.EnableMemoryCache, options => options.Ignore())
+            .ForMember(entity => entity.MemoryCacheTimeToLive, options => options.Ignore());
     }
 
     /// <summary>
@@ -428,11 +436,10 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(settings => settings.ProductSortingEnumDisabled, options => options.Ignore())
             .ForMember(settings => settings.ProductSortingEnumDisplayOrder, options => options.Ignore())
             .ForMember(settings => settings.PublishBackProductWhenCancellingOrders, options => options.Ignore())
-            .ForMember(settings => settings.UseAjaxLoadMenu, options => options.Ignore())
             .ForMember(settings => settings.UseLinksInRequiredProductWarnings, options => options.Ignore())
             .ForMember(settings => settings.UseStandardSearchWhenSearchProviderThrowsException, options => options.Ignore())
             .ForMember(settings => settings.ActiveSearchProviderSystemName, options => options.Ignore())
-            .ForMember(settings => settings.VendorProductReviewsPageSize, options => options.Ignore());
+            .ForMember(settings => settings.VendorProductReviewsPageSize, options => options.Ignore());        
 
         CreateMap<ProductCategory, CategoryProductModel>()
             .ForMember(model => model.ProductName, options => options.Ignore());
@@ -514,6 +521,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.BaseWeightIn, options => options.Ignore())
             .ForMember(model => model.CopyProductModel, options => options.Ignore())
             .ForMember(model => model.CrossSellProductSearchModel, options => options.Ignore())
+            .ForMember(model => model.FilterLevelValueSearchModel, options => options.Ignore())
             .ForMember(model => model.HasAvailableSpecificationAttributes, options => options.Ignore())
             .ForMember(model => model.IsLoggedInAsVendor, options => options.Ignore())
             .ForMember(model => model.LastStockQuantity, options => options.Ignore())
@@ -1070,6 +1078,32 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
     }
 
     /// <summary>
+    /// Create filter level maps
+    /// </summary>
+    protected virtual void CreateFilterLevelMaps()
+    {
+        CreateMap<FilterLevelSettingsModel, FilterLevelSettings>()
+            .ForMember(settings => settings.FilterLevelEnumDisabled, options => options.Ignore());
+
+        CreateMap<FilterLevelSettings, FilterLevelSettingsModel>()
+            .ForMember(settings => settings.FilterLevelSearchModel, options => options.Ignore());
+
+        CreateMap<FilterLevelValueModel, FilterLevelValue>()
+            .ForMember(entity => entity.CreatedOnUtc, options => options.Ignore())
+            .ForMember(entity => entity.UpdatedOnUtc, options => options.Ignore());
+        CreateMap<FilterLevelValue, FilterLevelValueModel>()
+            .ForMember(model => model.FilterLevel1ValueEnabled, options => options.Ignore())
+            .ForMember(model => model.FilterLevel2ValueEnabled, options => options.Ignore())
+            .ForMember(model => model.FilterLevel3ValueEnabled, options => options.Ignore())
+            .ForMember(model => model.FilterLevelValueProductSearchModel, options => options.Ignore());
+
+        CreateMap<FilterLevelValueProductModel, FilterLevelValueProductMapping>();
+        CreateMap<FilterLevelValueProductMapping, FilterLevelValueProductModel>()
+            .ForMember(model => model.ProductName, options => options.Ignore());
+    }
+
+
+    /// <summary>
     /// Create GDPR maps 
     /// </summary>
     protected virtual void CreateGdprMaps()
@@ -1167,7 +1201,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(settings => settings.ImageSquarePictureSize, options => options.Ignore())
             .ForMember(settings => settings.VideoIframeAllow, options => options.Ignore())
             .ForMember(settings => settings.VideoIframeHeight, options => options.Ignore())
-            .ForMember(settings => settings.VideoIframeWidth, options => options.Ignore());
+            .ForMember(settings => settings.VideoIframeWidth, options => options.Ignore())
+            .ForMember(settings => settings.PicturePath, options => options.Ignore());
     }
 
     /// <summary>
@@ -1345,6 +1380,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
 
         CreateMap<OrderSettings, OrderSettingsModel>()
             .ForMember(model => model.AllowAdminsToBuyCallForPriceProducts_OverrideForStore, options => options.Ignore())
+            .ForMember(model => model.AllowCustomersCancelOrders_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.ShowProductThumbnailInOrderDetailsPage_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.AnonymousCheckoutAllowed_OverrideForStore, options => options.Ignore())
             .ForMember(model => model.AttachPdfInvoiceToOrderProcessingEmail_OverrideForStore, options => options.Ignore())
@@ -1774,6 +1810,47 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(entity => entity.Address, options => options.Ignore());
         CreateMap<WarehouseModel, Warehouse>()
             .ForMember(entity => entity.AddressId, options => options.Ignore());
+    }
+
+    /// <summary>
+    /// Create menu maps 
+    /// </summary>
+    protected virtual void CreateMenuMaps()
+    {
+        CreateMap<Menu, MenuModel>()
+            .ForMember(model => model.AvailableMenuTypes, options => options.Ignore())
+            .ForMember(model => model.MenuTypeName, options => options.Ignore())
+            .ForMember(model => model.MenuItemSearchModel, options => options.Ignore());
+        CreateMap<MenuModel, Menu>()
+            .ForMember(menu => menu.MenuType, options => options.Ignore())
+            .ForMember(menu => menu.Deleted, options => options.Ignore());
+
+        CreateMap<MenuItem, MenuItemModel>()
+            .ForMember(model => model.AvailableMenuItemTypes, options => options.Ignore())
+            .ForMember(model => model.AvailableMenuItemTemplates, options => options.Ignore())
+            .ForMember(model => model.AvailableStandardRoutes, options => options.Ignore())
+            .ForMember(model => model.AvailableMenuItems, options => options.Ignore())
+
+            .ForMember(model => model.CategoryId, options => options.Ignore())
+            .ForMember(model => model.AvailableCategories, options => options.Ignore())
+
+            .ForMember(model => model.VendorId, options => options.Ignore())
+            .ForMember(model => model.AvailableVendors, options => options.Ignore())
+
+            .ForMember(model => model.TopicId, options => options.Ignore())
+            .ForMember(model => model.AvailableTopics, options => options.Ignore())
+
+            .ForMember(model => model.ManufacturerId, options => options.Ignore())
+            .ForMember(model => model.AvailableManufacturers, options => options.Ignore())
+
+            .ForMember(model => model.ProductId, options => options.Ignore())
+            .ForMember(model => model.ProductName, options => options.Ignore())
+            .ForMember(model => model.MenuItemTypeName, options => options.Ignore())
+            .ForMember(model => model.Breadcrumb, options => options.Ignore());
+        CreateMap<MenuItemModel, MenuItem>()
+            .ForMember(entity => entity.MenuItemType, options => options.Ignore())
+            .ForMember(entity => entity.Template, options => options.Ignore())
+            .ForMember(entity => entity.EntityId, options => options.Ignore());
     }
 
     #endregion

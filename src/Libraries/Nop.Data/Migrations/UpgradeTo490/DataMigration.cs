@@ -1,4 +1,5 @@
 ﻿using FluentMigrator;
+using LinqToDB;
 using Nop.Core.Domain.Logging;
 using Nop.Core.Domain.Messages;
 
@@ -61,15 +62,15 @@ public class DataMigration : Migration
                 }
             );
 
-            var newsLetterSubscriptions = _dataProvider.GetTable<NewsLetterSubscription>().ToList();
-            foreach (var newsLetterSubscription in newsLetterSubscriptions)
-            {
-                newsLetterSubscription.TypeId = subscriptionType.Id;
-            }
-
-            _dataProvider.UpdateEntities(newsLetterSubscriptions);
+            _dataProvider.GetTable<NewsLetterSubscription>()
+                .Set(p => p.TypeId, subscriptionType.Id)
+                .Update();
         }
 
+        //alter columns
+        Alter.Table(nameof(NewsLetterSubscription))
+            .AlterColumn(nameof(NewsLetterSubscription.TypeId)).AsInt32().NotNullable();
+        
         if (!activityLogTypeTable.Any(alt => string.Compare(alt.SystemKeyword, "AddSubscriptionType", StringComparison.InvariantCultureIgnoreCase) == 0))
         {
             _dataProvider.InsertEntity(
@@ -145,6 +146,154 @@ public class DataMigration : Migration
                 Name = MessageTemplateSystemNames.CUSTOMER_FAILED_LOGIN_ATTEMPT_NOTIFICATION,
                 Subject = "%Store.Name%. Failed Login Attempt",
                 Body = $"<p>{Environment.NewLine}You have received this notification because we registered a login attempt with invalid authentication on <a href=\"%Store.URL%\">%Store.Name%</a>.{Environment.NewLine}</p>{Environment.NewLine}",
+                IsActive = true,
+                EmailAccountId = eaGeneral.Id
+            });
+        }
+
+        //#7411
+        if (!activityLogTypeTable.Any(alt => string.Compare(alt.SystemKeyword, "AddNewFilterLevelValue", StringComparison.InvariantCultureIgnoreCase) == 0))
+        {
+            _dataProvider.InsertEntity(
+                new ActivityLogType
+                {
+                    SystemKeyword = "AddNewFilterLevelValue",
+                    Enabled = true,
+                    Name = "Add a new filter level value"
+                }
+            );
+        }
+
+        if (!activityLogTypeTable.Any(alt => string.Compare(alt.SystemKeyword, "EditFilterLevelValue", StringComparison.InvariantCultureIgnoreCase) == 0))
+        {
+            _dataProvider.InsertEntity(
+                new ActivityLogType
+                {
+                    SystemKeyword = "EditFilterLevelValue",
+                    Enabled = true,
+                    Name = "Edit a filter level value"
+                }
+            );
+        }
+
+        if (!activityLogTypeTable.Any(alt => string.Compare(alt.SystemKeyword, "DeleteFilterLevelValue", StringComparison.InvariantCultureIgnoreCase) == 0))
+        {
+            _dataProvider.InsertEntity(
+                new ActivityLogType
+                {
+                    SystemKeyword = "DeleteFilterLevelValue",
+                    Enabled = true,
+                    Name = "Delete a filter level value"
+                }
+            );
+        }
+        
+        if (!activityLogTypeTable.Any(alt => string.Compare(alt.SystemKeyword, "ExportFilterLevelValues", StringComparison.InvariantCultureIgnoreCase) == 0))
+        {
+            _dataProvider.InsertEntity(
+                new ActivityLogType
+                {
+                    SystemKeyword = "ExportFilterLevelValues",
+                    Enabled = true,
+                    Name = "Export filter level values"
+                }
+            );
+        }
+
+        if (!activityLogTypeTable.Any(alt => string.Compare(alt.SystemKeyword, "ImportFilterLevelValues", StringComparison.InvariantCultureIgnoreCase) == 0))
+        {
+            _dataProvider.InsertEntity(
+                new ActivityLogType
+                {
+                    SystemKeyword = "ImportFilterLevelValues",
+                    Enabled = true,
+                    Name = "Import filter level values"
+                }
+            );
+        }
+
+        //#7390
+        if (!activityLogTypeTable.Any(alt => string.Compare(alt.SystemKeyword, "AddNewMenu", StringComparison.InvariantCultureIgnoreCase) == 0))
+        {
+            _dataProvider.InsertEntity(
+                new ActivityLogType
+                {
+                    SystemKeyword = "AddNewMenu",
+                    Enabled = true,
+                    Name = "Add a new menu"
+                }
+            );
+        }
+
+        if (!activityLogTypeTable.Any(alt => string.Compare(alt.SystemKeyword, "DeleteMenu", StringComparison.InvariantCultureIgnoreCase) == 0))
+        {
+            _dataProvider.InsertEntity(
+                new ActivityLogType
+                {
+                    SystemKeyword = "DeleteMenu",
+                    Enabled = true,
+                    Name = "Delete a menu"
+                }
+            );
+        }
+
+        if (!activityLogTypeTable.Any(alt => string.Compare(alt.SystemKeyword, "EditMenu", StringComparison.InvariantCultureIgnoreCase) == 0))
+        {
+            _dataProvider.InsertEntity(
+                new ActivityLogType
+                {
+                    SystemKeyword = "EditMenu",
+                    Enabled = true,
+                    Name = "Edit a menu"
+                }
+            );
+        }
+
+        if (!activityLogTypeTable.Any(alt => string.Compare(alt.SystemKeyword, "AddNewMenuItem", StringComparison.InvariantCultureIgnoreCase) == 0))
+        {
+            _dataProvider.InsertEntity(
+                new ActivityLogType
+                {
+                    SystemKeyword = "AddNewMenuItem",
+                    Enabled = true,
+                    Name = "Add a new menu item"
+                }
+            );
+        }
+
+        if (!activityLogTypeTable.Any(alt => string.Compare(alt.SystemKeyword, "DeleteMenuItem", StringComparison.InvariantCultureIgnoreCase) == 0))
+        {
+            _dataProvider.InsertEntity(
+                new ActivityLogType
+                {
+                    SystemKeyword = "DeleteMenuItem",
+                    Enabled = true,
+                    Name = "Delete a menu item"
+                }
+            );
+        }
+
+        if (!activityLogTypeTable.Any(alt => string.Compare(alt.SystemKeyword, "EditMenuItem", StringComparison.InvariantCultureIgnoreCase) == 0))
+        {
+            _dataProvider.InsertEntity(
+                new ActivityLogType
+                {
+                    SystemKeyword = "EditMenuItem",
+                    Enabled = true,
+                    Name = "Edit a menu item"
+                }
+            );
+        }
+
+        //#7384
+        if (!_dataProvider.GetTable<MessageTemplate>().Any(st => string.Compare(st.Name, MessageTemplateSystemNames.ORDER_CANCELLED_STORE_OWNER_NOTIFICATION, StringComparison.InvariantCultureIgnoreCase) == 0))
+        {
+            var eaGeneral = _dataProvider.GetTable<EmailAccount>().FirstOrDefault() ?? throw new Exception("Default email account cannot be loaded");
+            _dataProvider.InsertEntity(new MessageTemplate
+            {
+                Name = MessageTemplateSystemNames.ORDER_CANCELLED_STORE_OWNER_NOTIFICATION,
+                Subject = "%Store.Name%. Order #%Order.OrderNumber% cancelled",
+                Body = $"<p>{Environment.NewLine}<a href=\"%Store.URL%\">%Store.Name%</a>{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}Order #%Order.OrderNumber% has been cancelled by customer.{Environment.NewLine}<br />{Environment.NewLine}Customer: %Order.CustomerFullName%,{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}Order Number: %Order.OrderNumber%{Environment.NewLine}<br />{Environment.NewLine}Date Ordered: %Order.CreatedOn%{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}%Order.Product(s)%{Environment.NewLine}</p>{Environment.NewLine}",
                 IsActive = true,
                 EmailAccountId = eaGeneral.Id
             });

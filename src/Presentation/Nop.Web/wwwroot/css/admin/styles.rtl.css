@@ -691,8 +691,9 @@ i.false-icon {
 
 /*override font-awesome styles*/
 .fa, .far, .fas {
+  display: inline;
   padding-left: 5px;
-  font-size: 1.01em;
+  font-size: 1.0em;
 }
 
 /*typeahead*/
@@ -1346,6 +1347,18 @@ input[type=file].form-control {
   content: attr(data-postfix);
 }
 
+.form-group .choose-entity-container {
+  display: flex;
+  gap: 3px;
+}
+
+.form-group .choose-entity-container .entity-info {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  padding: 5px;
+}
+
 /* PRODUCT EDIT/CREATE */
 .form-group + .nav-tabs-localized-fields {
   margin-top: 15px;
@@ -1861,12 +1874,11 @@ span.grid-report-item.red {
   padding: 2px;
 }
 
-.table > tbody > tr > td.button-column .btn {
-  margin-top: 1px;
-  margin-bottom: 1px;
-  padding: 5px 12px;
-  white-space: nowrap;
-}
+  .table > tbody > tr > td.button-column .btn {
+    margin: 10px;
+    padding: 5px 12px;
+    white-space: nowrap;
+  }
 
 div.dt-container .data-tables-refresh > div {
   float: none;

@@ -1,8 +1,8 @@
 ﻿@model NewsLetterBoxModel
-<div class="newsletter">
-    <div class="title">
-        <strong>@T("Newsletter.Title")</strong>
-    </div>
+<div class="newsletter" role="form">
+    <h2 class="title">
+        @T("Newsletter.Title")
+    </h2>
     <div class="newsletter-subscribe" id="newsletter-subscribe-block">
         <div class="newsletter-email">
             <input asp-for="NewsLetterEmail" id="newsletter-email" class="newsletter-subscribe-text" placeholder=@T("Newsletter.Email.Placeholder") aria-label="@T("Newsletter.Subscribe")" />
@@ -69,7 +69,7 @@
             $.ajax({
                 cache: false,
                 type: "POST",
-                url: "@(Url.RouteUrl("SubscribeNewsletter"))",
+                url: "@(Url.RouteUrl(NopRouteNames.Ajax.SUBSCRIBE_NEWSLETTER))",
                 data: postData,
                 success: function (data, textStatus, jqXHR) {
                     $("#newsletter-result-block").html(data.Result);

@@ -14,11 +14,13 @@ using Nop.Core.Domain.Common;
 using Nop.Core.Domain.Configuration;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Directory;
+using Nop.Core.Domain.FilterLevels;
 using Nop.Core.Domain.Forums;
 using Nop.Core.Domain.Gdpr;
 using Nop.Core.Domain.Localization;
 using Nop.Core.Domain.Logging;
 using Nop.Core.Domain.Media;
+using Nop.Core.Domain.Menus;
 using Nop.Core.Domain.Messages;
 using Nop.Core.Domain.News;
 using Nop.Core.Domain.Orders;
@@ -39,6 +41,7 @@ using Nop.Services.Catalog;
 using Nop.Services.Common;
 using Nop.Services.Customers;
 using Nop.Services.Helpers;
+using Nop.Services.Media;
 using Nop.Services.Messages;
 using Nop.Services.Seo;
 
@@ -851,6 +854,13 @@ public partial class InstallationService
                     EmailAccountId = eaGeneral.Id
                 },
                 new() {
+                    Name = MessageTemplateSystemNames.ORDER_CANCELLED_STORE_OWNER_NOTIFICATION,
+                    Subject = "%Store.Name%. Order #%Order.OrderNumber% cancelled",
+                    Body = $"<p>{Environment.NewLine}<a href=\"%Store.URL%\">%Store.Name%</a>{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}Order #%Order.OrderNumber% has been cancelled by customer.{Environment.NewLine}<br />{Environment.NewLine}Customer: %Order.CustomerFullName%,{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}Order Number: %Order.OrderNumber%{Environment.NewLine}<br />{Environment.NewLine}Date Ordered: %Order.CreatedOn%{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}%Order.Product(s)%{Environment.NewLine}</p>{Environment.NewLine}",
+                    IsActive = true,
+                    EmailAccountId = eaGeneral.Id
+                },
+                new() {
                     Name = MessageTemplateSystemNames.ORDER_CANCELLED_VENDOR_NOTIFICATION,
                     Subject = "%Store.Name%. Order #%Order.OrderNumber% cancelled",
                      Body = $"<p>{Environment.NewLine}<a href=\"%Store.URL%\">%Store.Name%</a>{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}Order #%Order.OrderNumber% has been cancelled.{Environment.NewLine}<br />{Environment.NewLine}Customer: %Order.CustomerFullName%,{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}Order Number: %Order.OrderNumber%{Environment.NewLine}<br />{Environment.NewLine}Date Ordered: %Order.CreatedOn%{Environment.NewLine}<br />{Environment.NewLine}<br />{Environment.NewLine}%Order.Product(s)%{Environment.NewLine}</p>{Environment.NewLine}",
@@ -1335,7 +1345,10 @@ public partial class InstallationService
             RichEditorAdditionalSettings = null,
             UseRichEditorForCustomerEmails = false,
             UseRichEditorInMessageTemplates = false,
+            HideAdvertisementsOnAdminArea = false,
             CheckLicense = true,
+            LastNewsTitleAdminArea = string.Empty,
+            LicenseTerms = string.Empty,
             UseIsoDateFormatInJsonResult = true,
             ShowDocumentationReferenceLinks = true,
             UseStickyHeaderLayout = false,
@@ -1348,6 +1361,7 @@ public partial class InstallationService
             Dimensions = true,
             ProductAttributes = true,
             SpecificationAttributes = true,
+            FilterLevelValuesProducts = true,
             PAngV = isGermany
         });
 
@@ -1459,7 +1473,6 @@ public partial class InstallationService
             ExportImportRelatedEntitiesByName = true,
             ExportImportCategoryUseLimitedToStores = false,
             CountDisplayedYearsDatePicker = 1,
-            UseAjaxLoadMenu = false,
             UseAjaxCatalogProductsLoading = true,
             EnableManufacturerFiltering = true,
             EnablePriceRangeFiltering = true,
@@ -1482,7 +1495,14 @@ public partial class InstallationService
             GeminiApiKey = string.Empty,
             ProviderType = ArtificialIntelligenceProviderType.Gemini,
             RequestTimeout = ArtificialIntelligenceDefaults.RequestTimeout,
-            ProductDescriptionQuery = ArtificialIntelligenceDefaults.ProductDescriptionQuery
+            AllowProductDescriptionGeneration = true,
+            ProductDescriptionQuery = ArtificialIntelligenceDefaults.ProductDescriptionQuery,
+            AllowMetaTitleGeneration = true,
+            MetaTitleQuery = ArtificialIntelligenceDefaults.MetaTitleQuery,
+            AllowMetaKeywordsGeneration = true,
+            MetaKeywordsQuery = ArtificialIntelligenceDefaults.MetaKeywordsQuery,
+            AllowMetaDescriptionGeneration = true,
+            MetaDescriptionQuery = ArtificialIntelligenceDefaults.MetaDescriptionQuery
         });
 
         await SaveSettingAsync(dictionary, new LocalizationSettings
@@ -1631,7 +1651,8 @@ public partial class InstallationService
             AutoOrientImage = false,
             VideoIframeAllow = "fullscreen",
             VideoIframeWidth = 300,
-            VideoIframeHeight = 150
+            VideoIframeHeight = 150,
+            PicturePath = NopMediaDefaults.DefaultImagesPath
         });
 
         await SaveSettingAsync(dictionary, new StoreInformationSettings
@@ -1761,6 +1782,7 @@ public partial class InstallationService
             CustomOrderNumberMask = "{ID}",
             ExportWithProducts = true,
             AllowAdminsToBuyCallForPriceProducts = true,
+            AllowCustomersCancelOrders = true,
             ShowProductThumbnailInOrderDetailsPage = true,
             DisplayCustomerCurrencyOnOrders = false,
             DisplayOrderSummary = true,
@@ -1940,38 +1962,6 @@ public partial class InstallationService
         var eaGeneral = await Table<EmailAccount>().FirstOrDefaultAsync() ?? throw new Exception("Default email account cannot be loaded");
         await SaveSettingAsync(dictionary, new EmailAccountSettings { DefaultEmailAccountId = eaGeneral.Id });
 
-        var displayMenuItems = !_installationSettings.InstallSampleData;
-
-        await SaveSettingAsync(dictionary, new DisplayDefaultMenuItemSettings
-        {
-            DisplayHomepageMenuItem = displayMenuItems,
-            DisplayNewProductsMenuItem = displayMenuItems,
-            DisplayProductSearchMenuItem = displayMenuItems,
-            DisplayCustomerInfoMenuItem = displayMenuItems,
-            DisplayBlogMenuItem = displayMenuItems,
-            DisplayForumsMenuItem = displayMenuItems,
-            DisplayContactUsMenuItem = displayMenuItems
-        });
-
-        await SaveSettingAsync(dictionary, new DisplayDefaultFooterItemSettings
-        {
-            DisplaySitemapFooterItem = true,
-            DisplayContactUsFooterItem = true,
-            DisplayProductSearchFooterItem = true,
-            DisplayNewsFooterItem = true,
-            DisplayBlogFooterItem = true,
-            DisplayForumsFooterItem = true,
-            DisplayRecentlyViewedProductsFooterItem = true,
-            DisplayCompareProductsFooterItem = true,
-            DisplayNewProductsFooterItem = true,
-            DisplayCustomerInfoFooterItem = true,
-            DisplayCustomerOrdersFooterItem = true,
-            DisplayCustomerAddressesFooterItem = true,
-            DisplayShoppingCartFooterItem = true,
-            DisplayWishlistFooterItem = true,
-            DisplayApplyVendorAccountFooterItem = true
-        });
-
         await SaveSettingAsync(dictionary, new CaptchaSettings
         {
             ReCaptchaApiUrl = "https://www.google.com/recaptcha/",
@@ -2030,7 +2020,7 @@ public partial class InstallationService
                 "/files/exportimport/",
                 "/install",
                 "/*?*returnUrl=",
-                "/*?*returnurl=", 
+                "/*?*returnurl=",
                 "/*?*ReturnUrl=",
                 //AJAX urls
                 "/cart/estimateshipping",
@@ -2039,7 +2029,6 @@ public partial class InstallationService
                 "/customer/removeexternalassociation",
                 "/customer/checkusernameavailability",
                 "/catalog/searchtermautocomplete",
-                "/catalog/getcatalogroot",
                 "/addproducttocart/catalog/*",
                 "/addproducttocart/details/*",
                 "/compareproducts/add/*",
@@ -2129,6 +2118,21 @@ public partial class InstallationService
                 "/uploadfilereturnrequest",
                 "/wishlist"
             ]
+        });
+
+        await SaveSettingAsync(dictionary, new FilterLevelSettings
+        {
+            DisplayOnHomePage = true,
+            DisplayOnProductDetailsPage = true
+        });
+
+        await SaveSettingAsync(dictionary, new MenuSettings
+        {
+            NumberOfSubItemsPerGridElement = 3,
+            NumberOfItemsPerGridRow = 4,
+            MaximumNumberEntities = 8,
+            GridThumbPictureSize = 220,
+            MaximumMainMenuLevels = 2
         });
     }
 
@@ -2303,7 +2307,6 @@ public partial class InstallationService
                     SystemName = "AboutUs",
                     IncludeInSitemap = false,
                     IsPasswordProtected = false,
-                    IncludeInFooterColumn1 = true,
                     DisplayOrder = 20,
                     Published = true,
                     Title = "About us",
@@ -2326,7 +2329,6 @@ public partial class InstallationService
                     SystemName = "ConditionsOfUse",
                     IncludeInSitemap = false,
                     IsPasswordProtected = false,
-                    IncludeInFooterColumn1 = true,
                     DisplayOrder = 15,
                     Published = true,
                     Title = "Conditions of Use",
@@ -2379,7 +2381,6 @@ public partial class InstallationService
                     SystemName = "PrivacyInfo",
                     IncludeInSitemap = false,
                     IsPasswordProtected = false,
-                    IncludeInFooterColumn1 = true,
                     DisplayOrder = 10,
                     Published = true,
                     Title = "Privacy notice",
@@ -2401,7 +2402,6 @@ public partial class InstallationService
                     SystemName = "ShippingInfo",
                     IncludeInSitemap = false,
                     IsPasswordProtected = false,
-                    IncludeInFooterColumn1 = true,
                     DisplayOrder = 5,
                     Published = true,
                     Title = "Shipping & returns",
@@ -2423,7 +2423,6 @@ public partial class InstallationService
                     SystemName = "VendorTermsOfService",
                     IncludeInSitemap = false,
                     IsPasswordProtected = false,
-                    IncludeInFooterColumn1 = false,
                     DisplayOrder = 1,
                     Published = true,
                     Title = "Terms of services for vendors",
@@ -2538,6 +2537,11 @@ public partial class InstallationService
                     Name = "Add a new gift card"
                 },
                 new() {
+                    SystemKeyword = "AddNewFilterLevelValue",
+                    Enabled = true,
+                    Name = "Add a new filter level value"
+                },
+                new() {
                     SystemKeyword = "AddNewLanguage",
                     Enabled = true,
                     Name = "Add a new language"
@@ -2596,6 +2600,16 @@ public partial class InstallationService
                     SystemKeyword = "AddNewStore",
                     Enabled = true,
                     Name = "Add a new store"
+                },
+                new() {
+                    SystemKeyword = "AddNewMenu",
+                    Enabled = true,
+                    Name = "Add a new menu"
+                },
+                new() {
+                    SystemKeyword = "AddNewMenuItem",
+                    Enabled = true,
+                    Name = "Add a new menu item"
                 },
                 new() {
                     SystemKeyword = "AddNewTopic",
@@ -2722,6 +2736,11 @@ public partial class InstallationService
                     Enabled = true,
                     Name = "Delete an email account"
                 },
+                new () {
+                    SystemKeyword = "DeleteFilterLevelValue",
+                    Enabled = true,
+                    Name = "Delete a filter level value"
+                },
                 new() {
                     SystemKeyword = "DeleteGiftCard",
                     Enabled = true,
@@ -2838,6 +2857,16 @@ public partial class InstallationService
                     Name = "Delete a topic"
                 },
                 new() {
+                    SystemKeyword = "DeleteMenu",
+                    Enabled = true,
+                    Name = "Delete a menu"
+                },
+                new() {
+                    SystemKeyword = "DeleteMenuItem",
+                    Enabled = true,
+                    Name = "Delete a menu item"
+                },
+                new() {
                     SystemKeyword = "DeleteVendor",
                     Enabled = true,
                     Name = "Delete a vendor"
@@ -2941,6 +2970,11 @@ public partial class InstallationService
                     SystemKeyword = "EditEmailAccount",
                     Enabled = true,
                     Name = "Edit an email account"
+                },
+                new() {
+                    SystemKeyword = "EditFilterLevelValue",
+                    Enabled = true,
+                    Name = "Edit a filter level value"
                 },
                 new() {
                     SystemKeyword = "EditGiftCard",
@@ -3073,6 +3107,16 @@ public partial class InstallationService
                     Name = "Edit a warehouse"
                 },
                 new() {
+                    SystemKeyword = "EditMenu",
+                    Enabled = true,
+                    Name = "Edit a menu"
+                },
+                new() {
+                    SystemKeyword = "EditMenuItem",
+                    Enabled = true,
+                    Name = "Edit a menu item"
+                },
+                new() {
                     SystemKeyword = "EditTopic",
                     Enabled = true,
                     Name = "Edit a topic"
@@ -3096,6 +3140,11 @@ public partial class InstallationService
                     SystemKeyword = "ImportCategories",
                     Enabled = true,
                     Name = "Categories were imported"
+                },
+                new() {
+                    SystemKeyword = "ImportFilterLevelValues",
+                    Enabled = true,
+                    Name = "Import filter level values"
                 },
                 new() {
                     SystemKeyword = "ImportManufacturers",
@@ -3131,6 +3180,11 @@ public partial class InstallationService
                     SystemKeyword = "ExportCategories",
                     Enabled = true,
                     Name = "Categories were exported"
+                },
+                new () {
+                    SystemKeyword = "ExportFilterLevelValues",
+                    Enabled = true,
+                    Name = "Export filter level values"
                 },
                 new() {
                     SystemKeyword = "ExportManufacturers",
@@ -3485,6 +3539,258 @@ public partial class InstallationService
         };
 
         await _dataProvider.BulkInsertEntitiesAsync(returnRequestActions);
+    }
+
+    /// <summary>
+    /// Installs menus
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    protected virtual async Task InstallMenusAsync()
+    {
+        await _dataProvider.InsertEntityAsync(new Menu
+        {
+            Name = "Categories",
+            MenuType = MenuType.Main,
+            DisplayAllCategories = true,
+            Published = _installationSettings.InstallSampleData
+        });
+
+        var standardMainMenu = await _dataProvider.InsertEntityAsync(new Menu
+        {
+            Name = "Menu",
+            MenuType = MenuType.Main,
+            DisplayOrder = 0,
+            DisplayAllCategories = false,
+            Published = !_installationSettings.InstallSampleData
+        });
+
+        await _dataProvider.BulkInsertEntitiesAsync(
+        [
+            new MenuItem
+            {
+                MenuId = standardMainMenu.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.HOMEPAGE,
+                Title = "Home page",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = standardMainMenu.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.NEW_PRODUCTS,
+                Title = "New products",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = standardMainMenu.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.SEARCH,
+                Title = "Search",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = standardMainMenu.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.CUSTOMER_INFO,
+                Title = "My account",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = standardMainMenu.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.BLOG,
+                Title = "Blog",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = standardMainMenu.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.CONTACT_US,
+                Title = "Contact us",
+                Published = true
+            }
+        ]);
+
+        var footerInformation = await _dataProvider.InsertEntityAsync(new Menu
+        {
+            Name = "Information",
+            MenuType = MenuType.Footer,
+            DisplayOrder = 0,
+            Published = true
+        });
+
+        await _dataProvider.BulkInsertEntitiesAsync(
+        [
+            new MenuItem
+            {
+                MenuId = footerInformation.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.SITEMAP,
+                Title = "Sitemap",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerInformation.Id,
+                MenuItemType = MenuItemType.TopicPage,
+                EntityId = Table<Topic>().FirstOrDefault(t => t.SystemName == "ShippingInfo")?.Id,
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerInformation.Id,
+                MenuItemType = MenuItemType.TopicPage,
+                EntityId = Table<Topic>().FirstOrDefault(t => t.SystemName == "PrivacyInfo")?.Id,
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerInformation.Id,
+                MenuItemType = MenuItemType.TopicPage,
+                EntityId = Table<Topic>().FirstOrDefault(t => t.SystemName == "ConditionsOfUse")?.Id,
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerInformation.Id,
+                MenuItemType = MenuItemType.TopicPage,
+                EntityId = Table<Topic>().FirstOrDefault(t => t.SystemName == "AboutUs")?.Id,
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerInformation.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.CONTACT_US,
+                Title = "Contact us",
+                Published = true
+            },
+        ]);
+
+        var footerCustomerService = await _dataProvider.InsertEntityAsync(new Menu
+        {
+            Name = "Customer service",
+            MenuType = MenuType.Footer,
+            DisplayOrder = 1,
+            Published = true
+        });
+
+        await _dataProvider.BulkInsertEntitiesAsync(
+        [
+            new MenuItem
+            {
+                MenuId = footerCustomerService.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.SEARCH,
+                Title = "Search",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerCustomerService.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.NEWS,
+                Title = "News",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerCustomerService.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.BLOG,
+                Title = "Blog",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerCustomerService.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.RECENTLY_VIEWED_PRODUCTS,
+                Title = "Recently viewed products",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerCustomerService.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.COMPARE_PRODUCTS,
+                Title = "Compare products list",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerCustomerService.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.NEW_PRODUCTS,
+                Title = "New products",
+                Published = true
+            },
+        ]);
+
+        var footerMyAccount = await _dataProvider.InsertEntityAsync(new Menu
+        {
+            Name = "My account",
+            MenuType = MenuType.Footer,
+            DisplayOrder = 2,
+            Published = true
+        });
+
+        await _dataProvider.BulkInsertEntitiesAsync(
+        [
+           new MenuItem
+            {
+                MenuId = footerMyAccount.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.CUSTOMER_INFO,
+                Title = "My account",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerMyAccount.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.CUSTOMER_ORDERS,
+                Title = "Orders",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerMyAccount.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.CUSTOMER_ADDRESSES,
+                Title = "Addresses",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerMyAccount.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.CART,
+                Title = "Shopping cart",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerMyAccount.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.WISHLIST,
+                Title = "Wishlist",
+                Published = true
+            },
+            new MenuItem
+            {
+                MenuId = footerMyAccount.Id,
+                MenuItemType = MenuItemType.StandardPage,
+                RouteName = NopRouteNames.General.APPLY_VENDOR_ACCOUNT,
+                Title = "Apply for vendor account",
+                Published = true
+            },
+        ]);
     }
 
     #endregion

@@ -7,9 +7,11 @@ using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Media;
 using Nop.Core.Domain.Orders;
+using Nop.Core.Domain.Payments;
 using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Tax;
 using Nop.Core.Domain.Vendors;
+using Nop.Core.Http;
 using Nop.Services.Catalog;
 using Nop.Services.Common;
 using Nop.Services.Customers;
@@ -224,14 +226,14 @@ public partial class OrderModelFactory : IOrderModelFactory
 
         var model = new CustomerOrderListModel
         {
-            AvailableLimits = new SelectList(periods, "ID", "Name", limit.ToString()),
+            AvailableLimits = new SelectList(periods, "ID", "Name", limit.ToString()).ToList(),
             PagerModel = new PagerModel(_localizationService)
             {
                 PageSize = orders.PageSize,
                 TotalRecords = orders.TotalCount,
                 PageIndex = orders.PageIndex,
                 ShowTotalSummary = true,
-                RouteActionName = "CustomerOrdersPaged",
+                RouteActionName = NopRouteNames.Standard.CUSTOMER_ORDERS_PAGED,
                 UseRouteLinks = true,
                 RouteValues = new CustomerOrdersRouteValues { PageNumber = orders.PageIndex, Limit = limit.ToString().ToLower() }
             }
@@ -313,7 +315,8 @@ public partial class OrderModelFactory : IOrderModelFactory
         {
             Id = order.Id,
             CreatedOn = await _dateTimeHelper.ConvertToUserTimeAsync(order.CreatedOnUtc, DateTimeKind.Utc),
-            OrderStatus = await _localizationService.GetLocalizedEnumAsync(order.OrderStatus),
+            OrderStatus = order.OrderStatus,
+            OrderStatusText = await _localizationService.GetLocalizedEnumAsync(order.OrderStatus),
             IsReOrderAllowed = _orderSettings.IsReOrderAllowed,
             IsReturnRequestAllowed = await _orderProcessingService.IsReturnRequestAllowedAsync(order),
             PdfInvoiceDisabled = _pdfSettings.DisablePdfInvoicesForPendingOrders && order.OrderStatus == OrderStatus.Pending,
@@ -395,10 +398,12 @@ public partial class OrderModelFactory : IOrderModelFactory
         var paymentMethod = await _paymentPluginManager
             .LoadPluginBySystemNameAsync(order.PaymentMethodSystemName, customer, order.StoreId);
         model.PaymentMethod = paymentMethod != null ? await _localizationService.GetLocalizedFriendlyNameAsync(paymentMethod, languageId) : order.PaymentMethodSystemName;
+        model.PaymentStatus = order.PaymentStatus;
         model.PaymentMethodStatus = await _localizationService.GetLocalizedEnumAsync(order.PaymentStatus);
         model.CanRePostProcessPayment = await _paymentService.CanRePostProcessPaymentAsync(order);
+
         //custom values
-        model.CustomValues = CommonHelper.DeserializeCustomValuesFromXml(order.CustomValuesXml);
+        model.CustomValues.FillByXml(order.CustomValuesXml, true);
 
         //order subtotal
         if (order.CustomerTaxDisplayType == TaxDisplayType.IncludingTax && !_taxSettings.ForceTaxExclusionFromOrderSubtotal)
@@ -552,6 +557,11 @@ public partial class OrderModelFactory : IOrderModelFactory
                 CreatedOn = await _dateTimeHelper.ConvertToUserTimeAsync(orderNote.CreatedOnUtc, DateTimeKind.Utc)
             });
         }
+
+        //can user cancel the order
+        model.CanCancelOrder = order.PaymentStatus == PaymentStatus.Pending
+            && order.OrderStatus != OrderStatus.Cancelled
+            && _orderSettings.AllowCustomersCancelOrders;
 
         //purchased products
         model.ShowSku = _catalogSettings.ShowSkuOnProductDetailsPage;
@@ -761,7 +771,7 @@ public partial class OrderModelFactory : IOrderModelFactory
                 TotalRecords = rewardPoints.TotalCount,
                 PageIndex = rewardPoints.PageIndex,
                 ShowTotalSummary = true,
-                RouteActionName = "CustomerRewardPointsPaged",
+                RouteActionName = NopRouteNames.Standard.CUSTOMER_REWARD_POINTS_PAGED,
                 UseRouteLinks = true,
                 RouteValues = new RewardPointsRouteValues { PageNumber = page ?? 0 }
             }
@@ -792,9 +802,7 @@ public partial class OrderModelFactory : IOrderModelFactory
     /// <summary>
     /// record that has only page for route value. Used for (My Account) Reward Points pagination
     /// </summary>
-    public partial record RewardPointsRouteValues : BaseRouteValues
-    {
-    }
+    public partial record RewardPointsRouteValues : BaseRouteValues;
 
     /// <summary>
     /// Record that has filter options for route values. Used for Customer orders pagination (My Account)

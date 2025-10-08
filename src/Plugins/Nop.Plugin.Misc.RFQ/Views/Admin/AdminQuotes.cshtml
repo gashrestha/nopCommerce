@@ -100,6 +100,8 @@
 
                     <div class="card card-default">
                         <div class="card-body">
+                            <nop-doc-reference asp-string-resource="@T("Admin.Documentation.Reference.RFQ", NopLinksDefaults.Docs.RFQ + NopLinksDefaults.Utm.OnAdmin)" />
+
                             @await Html.PartialAsync("Table", new DataTablesModel
                             {
                                 Name = "quotes-grid",
@@ -160,7 +162,7 @@
                             <script>
                                 $(function() {
                                     //"delete selected" button
-                                    $("#delete-selected-action-confirmation-submit-button").bind("click", function () {
+                                    $("#delete-selected-action-confirmation-submit-button").on("click", function () {
                                         var postData = {
                                             selectedIds: selectedIds
                                         };
@@ -175,8 +177,7 @@
                                                 showAlert('deleteSelectedFailed', errorThrown);
                                             },
                                             complete: function (jqXHR, textStatus) {
-                                                if (jqXHR.status === 204)
-                                                {
+                                                if (jqXHR.status === 204) {
                                                     showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
                                                     return;
                                                 }

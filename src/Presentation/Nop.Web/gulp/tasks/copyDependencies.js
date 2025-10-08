@@ -31,6 +31,11 @@ export default function copyDependencies()
     gulp
       .src(nodeModules + '{datatables.net,datatables.net-bs4,datatables.net-buttons,datatables.net-buttons-bs4}/**')
       .pipe(filter(['**/{css,js}/*.min*', '**/swf/*']))
+      .pipe(rename(function (path) {
+        if (path.dirname.includes("node_modules")) {
+          path.dirname = path.dirname.replace(/.*?node_modules[\\/]/, "");
+        }
+      }))
       .pipe(gulp.dest(targetPath)),
 
     //CLDR (unicode.org)
@@ -53,7 +58,7 @@ export default function copyDependencies()
 
     //Marked
     gulp
-      .src(`${nodeModules}marked/marked.min.{js,js.map}`)
+      .src(`${nodeModules}marked/lib/marked.umd.js`)
       .pipe(gulp.dest(targetPath + '/marked')),
 
     //Ionicons
