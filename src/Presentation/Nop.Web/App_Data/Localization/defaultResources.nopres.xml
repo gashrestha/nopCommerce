@@ -10216,7 +10216,7 @@
     <Value>Personalize your store</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.PoweredBy.Description">
-    <Value>Remove the “Powered by nopCommerce” link from the footer</Value>
+    <Value>Remove the “Powered by XPound” link from the footer</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.ConfigurationSteps.PoweredBy.Title">
     <Value>“Powered by” link</Value>
@@ -13048,7 +13048,7 @@
     <Value>Search</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.NopCommerceNews">
-    <Value>NopCommerce News</Value>
+    <Value>BBSM News</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Orders">
     <Value>Orders</Value>
